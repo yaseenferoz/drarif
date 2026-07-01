@@ -58,9 +58,9 @@
                         <ul class="head-top-links text-end">
                             <li>
                                 <ul class="header-social">
-                                    <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                                    <li><a href="https://www.instagram.com/dr.arifrazaahmed"><i class="fab fa-instagram"></i></a></li>
-                                    <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+                                    <li><a href="https://www.facebook.com/share/18TuprTSQt/?mibextid=wwXIfr"><i class="fab fa-facebook-f"></i></a></li>
+                                    <li><a href="https://www.instagram.com/dr.raza.gastro/?hl=en"><i class="fab fa-instagram"></i></a></li>
+                                    <li><a href="https://www.linkedin.com/in/dr-raza-ahmed-cancer-gi-surgeon-kalaburagi/"><i class="fab fa-linkedin-in"></i></a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -169,65 +169,122 @@
                     </div>
                 </div>
                 <div class="col-xl-7">
-                    <form action="#" class="form-wrap1 bg-white h-100" id="appointmentForm">
-                        <div class="form-title-box bg-title" data-bg-src="assets/img/bg/bg-shape-11.jpg">
-                            <div class="row justify-content-between align-items-center">
-                                <div class="col-auto">
-                                    <h2 class="h4 mb-1 text-white">Appointment Request</h2>
-                                    <p class="mb-0 text-white-light">The clinic team will call to confirm availability.</p>
-                                </div>
-                                <div class="col-auto d-none d-sm-block">
-                                    <a href="tel:+919187966771" class="ripple-icon style2"><i class="fas fa-phone"></i></a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-box">
-                            <div class="row">
-                                <div class="col-md-6 form-group">
-                                    <input type="text" class="form-control style2" name="name" placeholder="Full Name" required>
-                                    <i class="fal small fa-user"></i>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <input type="tel" class="form-control style2" name="phone" placeholder="Mobile Number" required>
-                                    <i class="fal small fa-phone"></i>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <input type="email" class="form-control style2" name="email" placeholder="Email Address (Optional)">
-                                    <i class="fal small fa-envelope"></i>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <select class="form-control style2" name="consultation_type" required>
-                                        <option value="" selected disabled>Consultation Type</option>
-                                        <option>New Consultation</option>
-                                        <option>Follow-Up</option>
-                                        <option>Second Opinion</option>
-                                        <option>Report Review</option>
-                                    </select>
-                                    <i class="fal small fa-stethoscope"></i>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <input type="date" class="form-control style2" name="preferred_date" required>
-                                    <i class="fal small fa-calendar-alt"></i>
-                                </div>
-                                <div class="col-md-6 form-group">
-                                    <select class="form-control style2" name="preferred_time" required>
-                                        <option value="" selected disabled>Preferred Time</option>
-                                        <option>Morning</option>
-                                        <option>Afternoon</option>
-                                        <option>Evening</option>
-                                    </select>
-                                    <i class="fal small fa-clock"></i>
-                                </div>
-                                <div class="col-12 form-group">
-                                    <textarea class="form-control style2" name="details" rows="4" placeholder="Briefly describe symptoms, diagnosis or report details" required></textarea>
-                                </div>
-                                <div class="col-12 text-center">
-                                    <button type="submit" class="vs-btn style2">Request Appointment <i class="far fa-calendar-alt"></i></button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+                    <div id="successMessage" class="alert alert-success" style="display:none;">
+    <strong>✓ Appointment Submitted Successfully!</strong><br>
+    Redirecting to WhatsApp...
+</div>
+    <form action="#" method="post" class="form-wrap1 bg-white h-100" id="appointmentForm" autocomplete="off" novalidate>
+
+        <div class="form-title-box bg-title" data-bg-src="assets/img/bg/bg-shape-11.jpg">
+            <div class="row justify-content-between align-items-center">
+                <div class="col-auto">
+                    <h2 class="h4 mb-1 text-white">Appointment Request</h2>
+                    <p class="mb-0 text-white-light">The clinic team will call to confirm availability.</p>
                 </div>
+                <div class="col-auto d-none d-sm-block">
+                    <a href="tel:+919187966771" class="ripple-icon style2">
+                        <i class="fas fa-phone"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-box">
+            <div class="row">
+
+                <div class="col-md-6 form-group">
+                    <input
+                        type="text"
+                        class="form-control style2"
+                        name="name"
+                        placeholder="Full Name"
+                        maxlength="100"
+                        required>
+                    <i class="fal small fa-user"></i>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <input
+                        type="tel"
+                        class="form-control style2"
+                        name="phone"
+                        placeholder="Mobile Number"
+                        maxlength="10"
+                        pattern="[6-9][0-9]{9}"
+                        required>
+                    <i class="fal small fa-phone"></i>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <input
+                        type="email"
+                        class="form-control style2"
+                        name="email"
+                        placeholder="Email Address (Optional)">
+                    <i class="fal small fa-envelope"></i>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <select
+                        class="form-control style2"
+                        name="consultation_type"
+                        required>
+                        <option value="" selected disabled>Consultation Type</option>
+                        <option>New Consultation</option>
+                        <option>Follow-Up</option>
+                        <option>Second Opinion</option>
+                        <option>Report Review</option>
+                    </select>
+                    <i class="fal small fa-stethoscope"></i>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <input
+                        type="date"
+                        class="form-control style2"
+                        name="preferred_date"
+                        required>
+                    <i class="fal small fa-calendar-alt"></i>
+                </div>
+
+                <div class="col-md-6 form-group">
+                    <select
+                        class="form-control style2"
+                        name="preferred_time"
+                        required>
+                        <option value="" selected disabled>Preferred Time</option>
+                        <option>Morning</option>
+                        <option>Afternoon</option>
+                        <option>Evening</option>
+                    </select>
+                    <i class="fal small fa-clock"></i>
+                </div>
+
+                <div class="col-12 form-group">
+                    <textarea
+                        class="form-control style2"
+                        name="details"
+                        rows="4"
+                        maxlength="1000"
+                        placeholder="Briefly describe symptoms, diagnosis or report details"
+                        required></textarea>
+                </div>
+
+                <div class="col-12 text-center">
+                    <button
+                        type="submit"
+                        id="submitBtn"
+                        class="vs-btn style2">
+                        Request Appointment
+                        <i class="far fa-calendar-alt"></i>
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
+    </form>
+</div>
             </div>
         </div>
     </section>
@@ -259,9 +316,9 @@
                     </div>
                     <div class="col-sm-6 text-center text-sm-end pt-20 pt-sm-0">
                         <div class="footer-social">
-                            <a href="#"><i class="fab fa-facebook-f"></i></a>
-                            <a href="https://www.instagram.com/dr.arifrazaahmed"><i class="fab fa-instagram"></i></a>
-                            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a href="https://www.facebook.com/share/18TuprTSQt/?mibextid=wwXIfr"><i class="fab fa-facebook-f"></i></a>
+                            <a href="https://www.instagram.com/dr.raza.gastro/?hl=en"><i class="fab fa-instagram"></i></a>
+                            <a href="https://www.linkedin.com/in/dr-raza-ahmed-cancer-gi-surgeon-kalaburagi/"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                     </div>
                 </div>
@@ -323,8 +380,8 @@
                     </div>
                     <div class="col-md-4 text-center text-md-end">
                         <ul class="footer-bottom-menu">
-                            <li><a href="#">Privacy Policy</a></li>
-                            <li><a href="#">Terms & Conditions</a></li>
+                            <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                            <li><a href="terms-conditions.html">Terms & Conditions</a></li>
                         </ul>
                     </div>
                 </div>
@@ -343,53 +400,108 @@
     <script src="assets/js/wow.min.js"></script>
     <script src="assets/js/vscustom-carousel.min.js"></script>
     <script>
-        (function () {
-            var form = document.getElementById('appointmentForm');
+(function () {
 
-            if (!form) {
+    const SUPABASE_URL = "https://hgibpnbhqtqvadauvbba.supabase.co";
+    const API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhnaWJwbmJocXRxdmFkYXV2YmJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI4NzQ3OTksImV4cCI6MjA5ODQ1MDc5OX0.zvId_pG_WllGaLAivn6KoDQUOr4ESe89M1zDWlZ0klM";
+    
+
+    const form = document.getElementById("appointmentForm");
+
+    if (!form) return;
+
+    form.addEventListener("submit", async function (e) {
+
+        e.preventDefault();
+
+        if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+        }
+
+        const formData = new FormData(form);
+
+        const appointment = {
+            full_name: formData.get("name"),
+            mobile_number: formData.get("phone"),
+            email: formData.get("email") || "",
+            consultation_type: formData.get("consultation_type"),
+            appointment_date: formData.get("preferred_date"),
+            preferred_time: formData.get("preferred_time"),
+            symptoms: formData.get("details")
+        };
+
+        try {
+
+            // Save to Supabase
+            const response = await fetch(
+                `${SUPABASE_URL}/rest/v1/appointments`,
+                {
+                    method: "POST",
+                    headers: {
+                        "apikey": API_KEY,
+                        "Authorization": `Bearer ${API_KEY}`,
+                        "Content-Type": "application/json",
+                        "Prefer": "return=representation"
+                    },
+                    body: JSON.stringify(appointment)
+                }
+            );
+
+            if (!response.ok) {
+                console.error(await response.text());
+                alert("Unable to submit appointment.");
                 return;
             }
 
-            form.addEventListener('submit', function (event) {
-                event.preventDefault();
+            // Build WhatsApp message
+            const message = [
+                "🏥 *New Appointment Request*",
+                "",
+                "*Patient Details*",
+                "👤 Name: " + appointment.full_name,
+                "📞 Mobile: " + appointment.mobile_number,
+                "📧 Email: " + (appointment.email || "Not provided"),
+                "",
+                "*Consultation*",
+                "🩺 Type: " + appointment.consultation_type,
+                "📅 Date: " + appointment.appointment_date,
+                "🕒 Time: " + appointment.preferred_time,
+                "",
+                "*Symptoms / Details*",
+                appointment.symptoms
+            ].join("\n");
 
-                if (!form.checkValidity()) {
-                    form.reportValidity();
-                    return;
-                }
+            // Open WhatsApp
+            window.open(
+                "https://wa.me/919560809252?text=" +
+                encodeURIComponent(message),
+                "_blank"
+            );
 
-                var formData = new FormData(form);
-                var name = formData.get('name');
-                var phone = formData.get('phone');
-                var email = formData.get('email') || 'Not provided';
-                var consultationType = formData.get('consultation_type');
-                var preferredDate = formData.get('preferred_date');
-                var preferredTime = formData.get('preferred_time');
-                var details = formData.get('details');
-                var message = [
-                    'Hello, I would like to book an appointment with Dr. Arif Raza.',
-                    '',
-                    'Patient Details:',
-                    'Name: ' + name,
-                    'Mobile Number: ' + phone,
-                    'Email: ' + email,
-                    '',
-                    'Appointment Preference:',
-                    'Consultation Type: ' + consultationType,
-                    'Preferred Date: ' + preferredDate,
-                    'Preferred Time: ' + preferredTime,
-                    '',
-                    'Symptoms / Report Details:',
-                    details,
-                    '',
-                    'Please confirm the available appointment slot.'
-                ].join('\n');
+            document.getElementById("successMessage").style.display = "block";
 
-                window.location.href = 'https://wa.me/919560809252?text=' + encodeURIComponent(message);
-            });
-        })();
-    </script>
+form.reset();
+
+setTimeout(() => {
+    window.location.href =
+        "https://wa.me/919560809252?text=" +
+        encodeURIComponent(message);
+}, 1500);
+
+            form.reset();
+
+        } catch (err) {
+            console.error(err);
+            alert("Network error.");
+        }
+
+    });
+
+})();
+</script>
     <script src="assets/js/main.js"></script>
+    
 </body>
 
 </html>
