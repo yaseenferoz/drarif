@@ -9,6 +9,7 @@ import {
   Settings, Stethoscope, Trash2, Upload, Users, X
 } from "@/components/icons";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase";
+import { resolveUserRole } from "@/lib/use-user-role";
 import {
   defaultGallery, defaultNavigation, defaultPages, defaultSettings,
   articles as defaultArticles, treatments as defaultTreatments,
@@ -50,9 +51,9 @@ export default function Admin(){
     if(!s){setLoading(false);return}
     const {data:{user}}=await s.auth.getUser();
     if(!user){router.replace("/login");return}
-    const {data:profile,error:profileError}=await s.from("profiles").select("role").eq("id",user.id).maybeSingle();
-    if(profileError){setMessage(`Could not read your profile: ${profileError.message}`);setLoading(false);return}
-    if(profile?.role!=="admin"){setMessage(`Signed in as ${profile?.role||"patient"}. Update this exact user's profile row to role = admin, then sign out and back in.`);setLoading(false);return}
+    const roleResult=await resolveUserRole(s,user.id);
+    if(roleResult.error){setMessage(`Could not verify your administrator role: ${roleResult.error}`);setLoading(false);return}
+    if(roleResult.role!=="admin"){setMessage(`Signed in as patient (${user.email}). Promote this exact account in Supabase, then refresh this page.`);setLoading(false);return}
     setAllowed(true);
     const results=await Promise.all([
       s.from("appointments").select("*").order("created_at",{ascending:false}),

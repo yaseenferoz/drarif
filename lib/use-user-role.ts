@@ -5,6 +5,24 @@ import { getSupabase } from "./supabase";
 
 export type UserRole = "admin" | "patient" | null;
 
+export async function resolveUserRole(supabase: any, userId: string) {
+  const adminCheck = await supabase.rpc("is_admin");
+  if (!adminCheck.error && adminCheck.data === true) {
+    return { role: "admin" as const, error: null };
+  }
+
+  const profile = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", userId)
+    .maybeSingle();
+
+  return {
+    role: profile.data?.role === "admin" ? "admin" as const : "patient" as const,
+    error: profile.error?.message || null
+  };
+}
+
 export function useUserRole() {
   const [role,setRole]=useState<UserRole>(null);
   const [email,setEmail]=useState("");
@@ -15,9 +33,8 @@ export function useUserRole() {
     supabase.auth.getUser().then(async({data:{user}})=>{
       if(!user){setLoading(false);return}
       setEmail(user.email || "");
-      const {data,error}=await supabase.from("profiles").select("role").eq("id",user.id).maybeSingle();
-      if(!error && data?.role==="admin") setRole("admin");
-      else setRole("patient");
+      const result=await resolveUserRole(supabase,user.id);
+      setRole(result.role);
       setLoading(false);
     });
   },[]);

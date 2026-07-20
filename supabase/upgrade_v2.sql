@@ -89,7 +89,33 @@ insert into public.site_settings(key,value) values
 ('general','{"logo_url":"/assets/img/gastroarif.png","doctor_name":"Dr. Arif Raza","credentials":"Consultant GI, HPB, GI Oncology & Advanced Laparoscopic Surgeon","phone":"+91 91879 66771","email":"dr.raza@nkhospital.in","hospital":"NK Hospital","location":"Kalaburagi, Karnataka","hours":"Monday – Saturday · 9:00 AM – 7:00 PM"}')
 on conflict(key) do nothing;
 
--- Replace this email if needed, then run the statement.
-update public.profiles
-set role='admin'
-where id=(select id from auth.users where email='yaseenfiroz@gmail.com');
+-- Promote the exact authentication account. This deliberately fails instead
+-- of silently updating zero rows when the email does not exist.
+do $$
+declare
+  admin_user_id uuid;
+begin
+  select id into admin_user_id
+  from auth.users
+  where lower(btrim(email)) = lower('yaseenfiroz@gmail.com')
+  limit 1;
+
+  if admin_user_id is null then
+    raise exception 'No Supabase Auth user exists for yaseenfiroz@gmail.com';
+  end if;
+
+  insert into public.profiles (id, full_name, role)
+  select
+    id,
+    coalesce(raw_user_meta_data->>'full_name', email, ''),
+    'admin'
+  from auth.users
+  where id = admin_user_id
+  on conflict (id) do update set role = 'admin';
+end $$;
+
+-- The SQL Editor result must show role = admin before testing the portal.
+select u.email, p.id, p.role
+from auth.users u
+join public.profiles p on p.id = u.id
+where lower(btrim(u.email)) = lower('yaseenfiroz@gmail.com');
