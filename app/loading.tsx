@@ -1,3 +1,5 @@
+import { DoctorLoader } from "@/components/doctor-loader";
+
 export default function Loading() {
-  return <div className="route-loading" aria-label="Loading page"/>;
+  return <DoctorLoader/>;
 }

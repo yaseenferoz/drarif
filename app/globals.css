@@ -32,3 +32,67 @@
 .button{transition:transform .15s ease,box-shadow .15s ease,background .15s ease,color .15s ease}
 .button:hover{transform:translateY(-1px)}
 @media(max-width:900px){.admin-sidebar{left:-300px;width:280px}.admin-shell{display:block}}
+
+/* Premium gastro-clinic language */
+:root{--deep:#072731;--forest:#0d5c59;--surgical:#0b8f88;--aqua:#69ddc3;--bile:#d4a83f;--ivory:#fbfbf6;--mist:#eef8f5}
+body{background:linear-gradient(180deg,#fbfffd 0%,#f6fbf9 46%,#fff 100%)}
+.doctor-loader{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:radial-gradient(circle at 50% 36%,rgba(105,221,195,.22),transparent 34%),linear-gradient(135deg,#f9fffc,#e9f7f4 55%,#fff8e5);animation:loaderFade .3s ease both}
+.doctor-loader-card{display:flex;align-items:center;gap:18px;background:rgba(255,255,255,.82);border:1px solid rgba(10,96,91,.12);box-shadow:0 28px 90px rgba(7,39,49,.16);backdrop-filter:blur(18px);border-radius:18px;padding:20px 24px;min-width:min(420px,calc(100vw - 36px))}
+.doctor-loader-card strong{display:block;font:700 18px "Manrope";color:var(--deep)}
+.doctor-loader-card small{display:block;margin-top:5px;color:#5d7478;font-size:12px}
+.gut-loader-mark{position:relative;width:74px;height:74px;border-radius:22px;background:linear-gradient(145deg,#06323d,#0a827c);box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 16px 34px rgba(8,124,120,.28)}
+.gut-loader-mark:before{content:"";position:absolute;inset:15px 20px;border:4px solid #bff7e7;border-top-color:transparent;border-right-color:#f5d277;border-radius:50% 50% 42% 42%;animation:gutTurn 1.2s cubic-bezier(.65,0,.35,1) infinite}
+.gut-loader-mark:after{content:"";position:absolute;left:31px;top:18px;width:15px;height:36px;border-left:4px solid #bff7e7;border-bottom:4px solid #bff7e7;border-radius:0 0 0 16px;animation:gutPulse 1.2s ease-in-out infinite}
+.gut-loader-mark span{position:absolute;border-radius:999px;background:#69ddc3;opacity:.35}
+.gut-loader-mark span:nth-child(1){width:10px;height:10px;right:14px;top:15px;animation:floatPoint 1.5s ease-in-out infinite}
+.gut-loader-mark span:nth-child(2){width:7px;height:7px;left:15px;bottom:18px;animation:floatPoint 1.5s .18s ease-in-out infinite}
+.gut-loader-mark span:nth-child(3){width:6px;height:6px;right:22px;bottom:14px;animation:floatPoint 1.5s .32s ease-in-out infinite}
+@keyframes gutTurn{0%,100%{transform:rotate(-8deg) scale(.96)}50%{transform:rotate(8deg) scale(1.04)}}
+@keyframes gutPulse{0%,100%{opacity:.55;transform:translateY(1px)}50%{opacity:1;transform:translateY(-2px)}}
+@keyframes floatPoint{0%,100%{transform:translateY(0);opacity:.25}50%{transform:translateY(-7px);opacity:.85}}
+@keyframes loaderFade{from{opacity:.25}to{opacity:1}}
+.topbar{background:linear-gradient(90deg,#061f28,#0a484e 48%,#0b6f68)}
+.header{height:88px;background:rgba(255,255,255,.82);box-shadow:0 16px 48px rgba(7,39,49,.08);border-bottom:1px solid rgba(8,124,120,.12)}
+.header:before{content:"";position:absolute;left:0;right:0;bottom:0;height:1px;background:linear-gradient(90deg,transparent,var(--aqua),transparent);opacity:.7}
+.header-inner{gap:30px}
+.brand{flex:0 0 250px;height:78px;border-radius:18px;padding:8px 14px;background:linear-gradient(135deg,#edf8f5,#fff8e8);box-shadow:inset 0 0 0 1px rgba(8,124,120,.08)}
+.brand-logo{width:220px;height:64px;object-fit:contain;object-position:left center;filter:drop-shadow(0 10px 22px rgba(7,39,49,.12));mix-blend-mode:multiply}
+.nav{gap:8px;padding:7px;background:rgba(239,249,246,.72);border:1px solid rgba(8,124,120,.1);border-radius:999px;box-shadow:inset 0 1px 0 rgba(255,255,255,.85)}
+.nav a{height:42px;padding:0 16px;border-radius:999px;color:#455d62;transition:color .2s ease,background .2s ease,transform .2s ease,box-shadow .2s ease}
+.nav a:hover{background:white;color:var(--surgical);transform:translateY(-1px);box-shadow:0 10px 24px rgba(8,124,120,.1)}
+.nav a.active{background:linear-gradient(135deg,#0b8f88,#096b66);color:white;box-shadow:0 12px 28px rgba(8,124,120,.22)}
+.nav a.active:after{left:50%;right:auto;bottom:-7px;width:8px;height:8px;border-radius:50%;background:var(--bile);transform:translateX(-50%);box-shadow:0 0 0 5px rgba(212,168,63,.14)}
+.icon-link,.menu-toggle{transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+.icon-link:hover,.menu-toggle:hover{transform:translateY(-2px);box-shadow:0 12px 26px rgba(8,124,120,.12);background:#fff}
+.hero{background:radial-gradient(circle at 84% 20%,rgba(212,168,63,.18),transparent 28%),radial-gradient(circle at 18% 26%,rgba(105,221,195,.22),transparent 25%),linear-gradient(135deg,#fbfffd 0%,#edf8f5 62%,#fff8e8 100%)}
+.hero:before{background-image:linear-gradient(rgba(8,124,120,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(8,124,120,.035) 1px,transparent 1px),radial-gradient(circle at 20px 20px,rgba(212,168,63,.09) 1px,transparent 2px);background-size:48px 48px,48px 48px,72px 72px}
+.hero-orb{filter:blur(0);animation:softDrift 7s ease-in-out infinite alternate}
+.orb-one{background:rgba(105,221,195,.18)}
+.orb-two{border-color:rgba(212,168,63,.28)}
+@keyframes softDrift{from{transform:translate3d(0,0,0)}to{transform:translate3d(16px,-14px,0)}}
+.float-card,.treatment-card,.article-card,.public-gallery article,.portal-nav,.portal-content,.auth-card{border-radius:14px;box-shadow:0 18px 55px rgba(7,39,49,.1)}
+.treatment-card,.article-card{border-color:rgba(8,124,120,.11)}
+.treatment-card:hover,.article-card:hover{transform:translateY(-7px);box-shadow:0 28px 70px rgba(7,39,49,.16)}
+.button{box-shadow:0 12px 28px rgba(8,124,120,.18)}
+.button:hover{box-shadow:0 18px 34px rgba(8,124,120,.24)}
+.admin-page-root{background:radial-gradient(circle at top right,rgba(105,221,195,.2),transparent 36%),linear-gradient(180deg,#f7fbf9,#edf5f3)}
+.admin-shell{background:transparent;grid-template-columns:292px 1fr}
+.admin-sidebar{background:linear-gradient(180deg,#051f28,#06333f 58%,#082a33);border-right:1px solid rgba(105,221,195,.12)}
+.admin-sidebar:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 40% 8%,rgba(105,221,195,.18),transparent 25%),linear-gradient(180deg,transparent,rgba(212,168,63,.08));pointer-events:none}
+.admin-logo{position:relative;height:108px;background:linear-gradient(145deg,#ffffff,#dff1ed);border:1px solid rgba(105,221,195,.35);padding:10px;justify-content:center}
+.admin-logo span{width:100%;height:100%;display:grid;place-items:center;border-radius:8px;background:rgba(255,255,255,.48);overflow:hidden}
+.admin-logo img{width:205px;height:78px;object-fit:contain;object-position:center;mix-blend-mode:multiply}
+.admin-logo button{position:absolute;right:10px;top:10px}
+.admin-label{position:relative;color:#8ecdc4;margin-top:30px}
+.admin-sidebar nav{position:relative;gap:7px}
+.admin-sidebar nav button,.admin-sidebar-bottom button,.admin-sidebar-bottom a{position:relative;color:#b6ced0;border:1px solid transparent}
+.admin-sidebar nav button:before{content:"";position:absolute;left:0;top:50%;width:3px;height:0;border-radius:99px;background:var(--bile);transform:translateY(-50%);transition:height .18s ease}
+.admin-sidebar nav button:hover,.admin-sidebar nav button.active{background:rgba(105,221,195,.12);border-color:rgba(105,221,195,.12);color:white;transform:translateX(3px)}
+.admin-sidebar nav button.active:before{height:22px}
+.admin-top{height:88px;background:rgba(255,255,255,.74);backdrop-filter:blur(18px);border-bottom:1px solid rgba(8,124,120,.1)}
+.admin-top h1{font-size:25px}
+.admin-welcome{background:radial-gradient(circle at 85% 25%,rgba(212,168,63,.28),transparent 22%),linear-gradient(135deg,#082f3b,#096c67);box-shadow:0 30px 80px rgba(7,39,49,.2);border:1px solid rgba(255,255,255,.12)}
+.admin-panel,.admin-stat-grid article,.editor-card,.content-row,.gallery-admin-grid article{border-color:rgba(8,124,120,.11);box-shadow:0 18px 50px rgba(7,39,49,.07)}
+.admin-stat-grid article>span{background:linear-gradient(145deg,#e5fbf4,#fff7df);color:var(--surgical)}
+@media(max-width:1100px){.nav{background:transparent;border:0;box-shadow:none}.brand{flex-basis:214px}.brand-logo{width:188px}}
+@media(max-width:620px){.doctor-loader-card{display:grid;text-align:center;place-items:center}.brand{background:transparent;box-shadow:none;padding:0}.nav a{height:auto}}

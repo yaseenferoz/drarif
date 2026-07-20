@@ -15,6 +15,7 @@ import {
   articles as defaultArticles, treatments as defaultTreatments,
   GalleryItem, NavigationItem, SitePage, SiteSettings
 } from "@/lib/site-data";
+import { DoctorLoader } from "@/components/doctor-loader";
 
 type Tab="overview"|"appointments"|"pages"|"treatments"|"articles"|"navigation"|"gallery"|"settings"|"media";
 type RecordRow=Record<string,any>;
@@ -83,14 +84,14 @@ export default function Admin(){
   }
   useEffect(()=>{load()},[]);
 
-  if(loading)return <section className="auth-shell"><div className="admin-loader"><span/><p>Checking administrator access…</p></div></section>;
+  if(loading)return <DoctorLoader/>;
   if(!isSupabaseConfigured)return <Denied title="Supabase setup required" text="Add the environment variables and run the included Supabase schema."/>;
   if(!allowed)return <Denied title="Admin access not active" text={message||"This account does not have the admin role."}/>;
 
   const current=tabs.find(item=>item.key===tab)!;
   return <section className="admin-shell">
     <aside className={`admin-sidebar ${menuOpen?"open":""}`}>
-      <div className="admin-logo"><Image src={settings.logo_url} width={190} height={65} alt={settings.doctor_name}/><button onClick={()=>setMenuOpen(false)}><X/></button></div>
+      <div className="admin-logo"><span><Image src={settings.logo_url} width={190} height={65} alt={settings.doctor_name}/></span><button onClick={()=>setMenuOpen(false)}><X/></button></div>
       <div className="admin-label">CONTENT MANAGEMENT</div>
       <nav>{tabs.map(item=><button className={tab===item.key?"active":""} key={item.key} onClick={()=>{setTab(item.key);setMenuOpen(false)}}>{item.icon}<span>{item.label}</span></button>)}</nav>
       <div className="admin-sidebar-bottom"><Link href="/">View website</Link><button onClick={async()=>{await getSupabase()?.auth.signOut();router.push("/login")}}><LogOut/>Sign out</button></div>
