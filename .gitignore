@@ -1,6 +1,8 @@
 .next
 .next-*
 dist
+.open-next
+.wrangler
 node_modules
 .env
 .env.local
@@ -11,3 +13,4 @@ qa-*.png
 .edge-qa
 .edge-*
 *.tsbuildinfo
+site-*.tar.gz
