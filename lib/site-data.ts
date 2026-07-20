@@ -94,6 +94,16 @@ export const defaultPages: SitePage[] = [
 ];
 
 export const defaultGallery: GalleryItem[] = [
+  { title:"Dr. Arif Raza", caption:"Consultant Gastrointestinal and GI Surgeon at NK Hospital.", image_url:"/gallery/IMG-20260613-WA0039.jpg", category:"Clinic", sort_order:1, published:true },
+  { title:"Specialist consultation", caption:"Dr. Arif Raza at NK Hospital, Kalaburagi.", image_url:"/gallery/IMG-20260613-WA0041.jpg", category:"Clinic", sort_order:2, published:true },
+  { title:"NK Hospital clinical team", caption:"A collaborative team supporting patient care.", image_url:"/gallery/IMG-20260613-WA0042.jpg", category:"Team", sort_order:3, published:true },
+  { title:"NK Hospital team", caption:"The people behind thoughtful, coordinated care.", image_url:"/gallery/IMG-20260613-WA0043.jpg", category:"Team", sort_order:4, published:true },
+  { title:"Clinic team portrait", caption:"Specialist and clinical support at NK Hospital.", image_url:"/gallery/IMG-20260613-WA0044.jpg", category:"Team", sort_order:5, published:true },
+  { title:"Care team", caption:"Working together for safer patient care.", image_url:"/gallery/IMG-20260613-WA0045.jpg", category:"Team", sort_order:6, published:true },
+  { title:"Dr. Arif Raza portrait", caption:"Advanced digestive and laparoscopic surgical care.", image_url:"/gallery/IMG-20260613-WA0046.jpg", category:"Clinic", sort_order:7, published:true },
+  { title:"Dr. Arif Raza", caption:"Clear guidance from consultation through recovery.", image_url:"/gallery/IMG-20260613-WA0047.jpg", category:"Clinic", sort_order:8, published:true },
+  { title:"NK Hospital team", caption:"A multidisciplinary clinical team.", image_url:"/gallery/IMG-20260613-WA0048.jpg", category:"Team", sort_order:9, published:true },
+  { title:"Dr. Arif at NK Hospital", caption:"Specialist digestive care in Kalaburagi.", image_url:"/gallery/IMG-20260613-WA0050.jpg", category:"Clinic", sort_order:10, published:true },
   { title:"Specialist consultation", caption:"Clear guidance for digestive and surgical concerns.", image_url:"/assets/img/aboutarif.png", category:"Clinic", sort_order:1, published:true },
   { title:"Advanced laparoscopic care", caption:"Modern keyhole surgery for suitable conditions.", image_url:"/assets/img/service/laprosocopic.png", category:"Treatments", sort_order:2, published:true },
   { title:"GI cancer care", caption:"Coordinated planning for complex gastrointestinal cancers.", image_url:"/assets/img/team/gicancer.png", category:"Treatments", sort_order:3, published:true },

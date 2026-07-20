@@ -30,18 +30,18 @@ export function ContentProvider({children}:{children:ReactNode}) {
     const supabase=getSupabase();
     if(supabase){
       const [t,a,p,n,g,s]=await Promise.all([
-        supabase.from("treatments").select("*").eq("published",true).order("sort_order"),
-        supabase.from("articles").select("*").eq("published",true).order("published_at",{ascending:false}),
+        supabase.from("treatments").select("*").order("sort_order"),
+        supabase.from("articles").select("*").order("published_at",{ascending:false}),
         supabase.from("site_pages").select("*").eq("published",true),
         supabase.from("navigation_items").select("*").eq("visible",true).order("sort_order"),
         supabase.from("gallery_items").select("*").eq("published",true).order("sort_order"),
         supabase.from("site_settings").select("*").eq("key","general").maybeSingle()
       ]);
-      if(t.data?.length) setTreatments(t.data);
-      if(a.data?.length) setArticles(a.data);
+      if(t.data?.length){const bySlug=new Map(t.data.map(row=>[row.slug,row]));setTreatments([...defaultsTreatments.map(item=>bySlug.get(item.slug)||item),...t.data.filter(row=>!defaultsTreatments.some(item=>item.slug===row.slug))].filter(item=>item.published!==false));}
+      if(a.data?.length){const bySlug=new Map(a.data.map(row=>[row.slug,row]));setArticles([...defaultsArticles.map(item=>bySlug.get(item.slug)||item),...a.data.filter(row=>!defaultsArticles.some(item=>item.slug===row.slug))].filter(item=>item.published!==false));}
       if(p.data?.length) setPages(defaultPages.map(item=>p.data.find(row=>row.page_key===item.page_key) || item));
       if(n.data?.length) setNavigation(n.data);
-      if(g.data?.length) setGallery(g.data);
+      if(g.data?.length) setGallery([...g.data, ...defaultGallery.filter(item=>!g.data.some(row=>row.image_url===item.image_url))]);
       if(s.data?.value) setSettings({...defaultSettings,...s.data.value});
     }
     setLoading(false);

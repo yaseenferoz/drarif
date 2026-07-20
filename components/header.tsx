@@ -4,18 +4,24 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { CalendarDays, CircleUserRound, Menu, Phone, X } from "./icons";
+import { CalendarDays, ChevronDown, CircleUserRound, Menu, Phone, X } from "./icons";
 import { site } from "@/lib/site-data";
 import { useContent } from "./content-provider";
 import { useUserRole } from "@/lib/use-user-role";
+import { practiceLogo } from "@/lib/brand";
 
 export function Header() {
   const [open, setOpen] = useState(false);
   const path = usePathname();
-  const {navigation,settings}=useContent();
+  const {navigation,settings,treatments,articles}=useContent();
   const {role}=useUserRole();
   const links=navigation.filter(item=>item.location==="header"&&item.visible).sort((a,b)=>a.sort_order-b.sort_order);
   const accountHref=role==="admin"?"/admin":"/portal";
+  const logoUrl=practiceLogo(settings.logo_url);
+  const menuItems={
+    "/treatments":treatments.slice(0,5).map(item=>({label:item.title,href:`/treatments/${item.slug}`})),
+    "/articles":articles.slice(0,5).map(item=>({label:item.title,href:`/articles/${item.slug}`}))
+  } as Record<string,{label:string;href:string}[]>;
   return (
     <>
       <div className="topbar">
@@ -27,10 +33,13 @@ export function Header() {
       <header className="header">
         <div className="shell header-inner">
           <Link href="/" className="brand" aria-label="Dr. Arif Raza home">
-            <Image className="brand-logo" src={settings.logo_url} width={220} height={72} alt={settings.doctor_name} priority/>
+            <Image className="brand-logo" src={logoUrl} width={220} height={72} alt={settings.doctor_name} priority/>
           </Link>
           <nav className="nav" aria-label="Main navigation">
-            {links.map(item => <Link className={path.startsWith(item.href) ? "active":""} href={item.href} key={`${item.label}-${item.href}`}>{item.label}</Link>)}
+            {links.map(item => {
+              const children=menuItems[item.href];
+              return children ? <div className="nav-menu" key={`${item.label}-${item.href}`}><Link className={path.startsWith(item.href) ? "active":""} href={item.href}>{item.label}<ChevronDown size={14}/></Link><div className="nav-dropdown">{children.map(child=><Link href={child.href} key={child.href}>{child.label}</Link>)}<Link className="nav-dropdown-all" href={item.href}>View all {item.label.toLowerCase()}</Link></div></div> : <Link className={path.startsWith(item.href) ? "active":""} href={item.href} key={`${item.label}-${item.href}`}>{item.label}</Link>
+            })}
           </nav>
           <div className="header-actions">
             <Link className="icon-link" href={accountHref} aria-label={role==="admin"?"Admin dashboard":"Patient portal"} title={role==="admin"?"Admin dashboard":"Patient portal"}><CircleUserRound size={21}/></Link>
@@ -38,7 +47,7 @@ export function Header() {
             <button className="menu-toggle" onClick={()=>setOpen(!open)} aria-label="Toggle menu">{open?<X/>:<Menu/>}</button>
           </div>
         </div>
-        {open && <nav className="mobile-nav">{links.map(item=><Link onClick={()=>setOpen(false)} href={item.href} key={`${item.label}-${item.href}`}>{item.label}</Link>)}<Link onClick={()=>setOpen(false)} href={accountHref}>{role==="admin"?"Admin dashboard":"Patient portal"}</Link><Link onClick={()=>setOpen(false)} href="/booking">Book appointment</Link></nav>}
+        {open && <nav className="mobile-nav">{links.map(item=><div key={`${item.label}-${item.href}`}><Link onClick={()=>setOpen(false)} href={item.href}>{item.label}</Link>{menuItems[item.href]?.map(child=><Link className="mobile-subnav-link" onClick={()=>setOpen(false)} href={child.href} key={child.href}>{child.label}</Link>)}</div>)}<Link onClick={()=>setOpen(false)} href={accountHref}>{role==="admin"?"Admin dashboard":"Patient portal"}</Link><Link onClick={()=>setOpen(false)} href="/booking">Book appointment</Link></nav>}
       </header>
     </>
   );

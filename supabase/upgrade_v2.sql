@@ -6,6 +6,34 @@ select id, coalesce(raw_user_meta_data->>'full_name', email, '')
 from auth.users
 on conflict (id) do nothing;
 
+-- Upgrade the existing appointments table without changing or deleting its
+-- records. Older versions of this site did not have the CMS workflow fields.
+alter table public.appointments add column if not exists status text;
+alter table public.appointments add column if not exists admin_notes text;
+alter table public.appointments add column if not exists updated_at timestamptz;
+update public.appointments set status = 'new' where status is null;
+update public.appointments set updated_at = coalesce(updated_at, created_at, now()) where updated_at is null;
+alter table public.appointments alter column status set default 'new';
+alter table public.appointments alter column status set not null;
+alter table public.appointments alter column updated_at set default now();
+alter table public.appointments alter column updated_at set not null;
+
+do $$
+begin
+  if not exists (
+    select 1 from pg_constraint
+    where conname = 'appointments_status_check'
+      and conrelid = 'public.appointments'::regclass
+  ) then
+    alter table public.appointments
+      add constraint appointments_status_check
+      check (status in ('new','confirmed','completed','cancelled'));
+  end if;
+end $$;
+
+-- Make the new columns available to the REST API straight away.
+notify pgrst, 'reload schema';
+
 create table if not exists public.site_pages (
   id uuid primary key default gen_random_uuid(),
   page_key text unique not null,

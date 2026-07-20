@@ -16,6 +16,7 @@ import {
   GalleryItem, NavigationItem, SitePage, SiteSettings
 } from "@/lib/site-data";
 import { DoctorLoader } from "@/components/doctor-loader";
+import { practiceLogo } from "@/lib/brand";
 
 type Tab="overview"|"appointments"|"pages"|"treatments"|"articles"|"navigation"|"gallery"|"settings"|"media";
 type RecordRow=Record<string,any>;
@@ -60,7 +61,9 @@ export default function Admin(){
       "appointments","treatments","articles","site_pages","navigation_items","gallery_items","site_settings"
     ];
     const results=await Promise.all([
-      s.from("appointments").select("*").order("created_at",{ascending:false}),
+      // The original production table uses an increasing bigint ID. It is a
+      // more reliable newest-first key than legacy created_at values.
+      s.from("appointments").select("*").order("id",{ascending:false}),
       s.from("treatments").select("*").order("sort_order"),
       s.from("articles").select("*").order("published_at",{ascending:false}),
       s.from("site_pages").select("*").order("page_key"),
@@ -69,11 +72,13 @@ export default function Admin(){
       s.from("site_settings").select("*").eq("key","general").maybeSingle()
     ]);
     setAppointments(results[0].data||[]);
-    setTreatments(results[1].data?.length?results[1].data:defaultTreatments);
-    setArticles(results[2].data?.length?results[2].data:defaultArticles);
+    const treatmentRows=results[1].data||[];const articleRows=results[2].data||[];
+    setTreatments([...defaultTreatments.map(item=>treatmentRows.find(row=>row.slug===item.slug)||item),...treatmentRows.filter(row=>!defaultTreatments.some(item=>item.slug===row.slug))]);
+    setArticles([...defaultArticles.map(item=>articleRows.find(row=>row.slug===item.slug)||item),...articleRows.filter(row=>!defaultArticles.some(item=>item.slug===row.slug))]);
     if(results[3].data?.length)setPages(results[3].data);
     if(results[4].data?.length)setNavigation(results[4].data);
-    if(results[5].data?.length)setGallery(results[5].data);
+    const galleryRows=results[5].data||[];
+    if(galleryRows.length)setGallery([...galleryRows, ...defaultGallery.filter(item=>!galleryRows.some(row=>row.image_url===item.image_url))]);
     if(results[6].data?.value)setSettings({...defaultSettings,...results[6].data.value});
     const queryErrors=results
       .map((result,index)=>result.error ? `${queries[index]}: ${result.error.message}` : "")
@@ -91,7 +96,7 @@ export default function Admin(){
   const current=tabs.find(item=>item.key===tab)!;
   return <section className="admin-shell">
     <aside className={`admin-sidebar ${menuOpen?"open":""}`}>
-      <div className="admin-logo"><span><Image src={settings.logo_url} width={190} height={65} alt={settings.doctor_name}/></span><button onClick={()=>setMenuOpen(false)}><X/></button></div>
+      <div className="admin-logo"><Image src={practiceLogo(settings.logo_url)} width={220} height={120} alt={settings.doctor_name}/><button onClick={()=>setMenuOpen(false)}><X/></button></div>
       <div className="admin-label">CONTENT MANAGEMENT</div>
       <nav>{tabs.map(item=><button className={tab===item.key?"active":""} key={item.key} onClick={()=>{setTab(item.key);setMenuOpen(false)}}>{item.icon}<span>{item.label}</span></button>)}</nav>
       <div className="admin-sidebar-bottom"><Link href="/">View website</Link><button onClick={async()=>{await getSupabase()?.auth.signOut();router.push("/login")}}><LogOut/>Sign out</button></div>
@@ -120,7 +125,7 @@ function Denied({title,text}:{title:string;text:string}){
 
 function Overview({appointments,treatments,articles,pages}:{appointments:RecordRow[];treatments:RecordRow[];articles:RecordRow[];pages:SitePage[]}){
   const cards=[
-    [appointments.filter(x=>x.status==="new").length,"New requests",<CalendarDays key="a"/>],
+    [appointments.filter(x=>(x.status||"new")==="new").length,"New requests",<CalendarDays key="a"/>],
     [appointments.length,"All appointments",<Users key="u"/>],[pages.length,"Editable pages",<FileText key="p"/>],
     [treatments.length+articles.length,"Published content",<Stethoscope key="c"/>]
   ];
@@ -128,8 +133,12 @@ function Overview({appointments,treatments,articles,pages}:{appointments:RecordR
 }
 
 function Appointments({items,reload}:{items:RecordRow[];reload:()=>void}){
-  async function change(id:string,status:string){await getSupabase()?.from("appointments").update({status,updated_at:new Date().toISOString()}).eq("id",id);reload()}
-  return <Panel title="Appointment requests" subtitle="Review every request and update the confirmation status."><div className="admin-table">{items.length?items.map(x=><div className="admin-table-row appointment-admin-row" key={x.id}><div><b>{x.full_name}</b><small>{x.mobile_number} · {x.email||"No email"}</small></div><div><b>{x.appointment_date}</b><small>{x.preferred_time} · {x.consultation_type}</small></div><p>{x.symptoms}</p><select value={x.status} onChange={e=>change(x.id,e.target.value)}><option>new</option><option>confirmed</option><option>completed</option><option>cancelled</option></select></div>):<Empty text="No appointment requests yet."/>}</div></Panel>;
+  async function change(id:string,status:string){
+    const {error}=await getSupabase()!.from("appointments").update({status,updated_at:new Date().toISOString()}).eq("id",id);
+    if(error){alert(`Could not update this appointment: ${error.message}. In Supabase SQL Editor, run the new supabase/fix_appointments_status.sql file once, then refresh this page.`);return}
+    reload();
+  }
+  return <Panel title="Appointment requests" subtitle="Review every request and update the confirmation status."><div className="admin-table">{items.length?items.map(x=><div className="admin-table-row appointment-admin-row" key={x.id}><div><b>{x.full_name}</b><small>{x.mobile_number} · {x.email||"No email"}</small></div><div><b>{x.appointment_date}</b><small>{x.preferred_time} · {x.consultation_type}</small></div><p>{x.symptoms}</p><select value={x.status||"new"} onChange={e=>change(x.id,e.target.value)}><option>new</option><option>confirmed</option><option>completed</option><option>cancelled</option></select></div>):<Empty text="No appointment requests yet."/>}</div></Panel>;
 }
 
 function PagesManager({items,reload}:{items:SitePage[];reload:()=>void}){
@@ -157,8 +166,9 @@ function CollectionManager({type,items,reload}:{type:"treatments"|"articles";ite
     const table:any=getSupabase()!.from(type);const result=editing?.id?await table.update(payload).eq("id",editing.id):await table.insert(payload);if(result.error)return alert(result.error.message);setEditing(null);reload();
   }
   async function remove(item:RecordRow){if(!confirm(`Delete "${item.title}"?`))return;await getSupabase()!.from(type).delete().eq("id",item.id);reload()}
+  async function restoreDefaults(){if(!confirm(`Restore the original ${isTreatment?"treatments":"articles"}? Custom records in this section will be removed.`))return;const s=getSupabase()!;const {error:deleteError}=await s.from(type).delete().not("id","is",null);if(deleteError)return alert(deleteError.message);const seeds:any=isTreatment?defaultTreatments:defaultArticles;const {error}=await s.from(type).insert(seeds);if(error)return alert(error.message);reload()}
   const blank=isTreatment?{title:"",slug:"",excerpt:"",image_url:"",eyebrow:"",symptoms:[],evaluations:[],treatments:[],preparation:[],recovery:"",urgent_signs:[],published:true,sort_order:items.length+1}:{title:"",slug:"",excerpt:"",image_url:"",category:"Health",content:"",reading_minutes:5,published:true};
-  return <Panel title={isTreatment?"Treatments":"Health articles"} subtitle={isTreatment?"Edit every treatment detail, preparation step and warning sign.":"Create and edit the complete health library."} action={<button className="button button-small" onClick={()=>setEditing(blank)}><Plus/>Add new</button>}>
+  return <Panel title={isTreatment?"Treatments":"Health articles"} subtitle={isTreatment?"Edit every treatment detail, preparation step and warning sign.":"Create and edit the complete health library."} action={<div className="panel-actions"><button className="button button-small button-ghost" onClick={restoreDefaults}>Restore defaults</button><button className="button button-small" onClick={()=>setEditing(blank)}><Plus/>Add new</button></div>}>
     {editing&&<Editor title={`${editing.id?"Edit":"Add"} ${isTreatment?"treatment":"article"}`} onClose={()=>setEditing(null)}><form className="admin-form admin-form-grid" onSubmit={save}><Field label="Title"><input name="title" defaultValue={editing.title} required/></Field><Field label="URL slug"><input name="slug" defaultValue={editing.slug} required/></Field><Field label={isTreatment?"Category label":"Category"}><input name={isTreatment?"eyebrow":"category"} defaultValue={editing.eyebrow||editing.category} required/></Field><Field label={isTreatment?"Sort order":"Reading minutes"}><input type="number" name={isTreatment?"sort_order":"reading_minutes"} defaultValue={editing.sort_order||editing.reading_minutes||0}/></Field><Field label="Image URL" full><input name="image_url" defaultValue={editing.image_url} required/></Field><Field label="Short summary" full><textarea name="excerpt" rows={3} defaultValue={editing.excerpt} required/></Field>
     {isTreatment?<><ListField name="symptoms" label="When to consult" values={editing.symptoms}/><ListField name="evaluations" label="Diagnosis & evaluation" values={editing.evaluations}/><ListField name="treatments" label="Treatment options" values={editing.treatments}/><ListField name="preparation" label="How to prepare" values={editing.preparation}/><Field label="Recovery & follow-up" full><textarea name="recovery" rows={4} defaultValue={editing.recovery}/></Field><ListField name="urgent_signs" label="Urgent warning signs" values={editing.urgent_signs}/></>:<Field label="Full article content" full><textarea name="content" rows={14} defaultValue={editing.content} required/></Field>}
     <Toggle name="published" label="Published" checked={editing.published!==false}/><SaveButtons/></form></Editor>}
@@ -192,11 +202,14 @@ function SettingsManager({value,reload}:{value:SiteSettings;reload:()=>void}){
 }
 
 function MediaManager(){
-  const [message,setMessage]=useState("");const [files,setFiles]=useState<RecordRow[]>([]);
+  const [message,setMessage]=useState("");const [files,setFiles]=useState<RecordRow[]>([]);const [query,setQuery]=useState("");
   async function list(){const {data}=await getSupabase()!.storage.from("site-media").list("",{limit:100,sortBy:{column:"created_at",order:"desc"}});setFiles(data||[])}
   useEffect(()=>{list()},[]);
-  async function upload(e:FormEvent<HTMLFormElement>){e.preventDefault();const file=new FormData(e.currentTarget).get("file") as File;if(!file)return;const path=`${Date.now()}-${file.name.replace(/\s+/g,"-")}`;const {data,error}=await getSupabase()!.storage.from("site-media").upload(path,file);if(error)setMessage(error.message);else if(data){const {data:url}=getSupabase()!.storage.from("site-media").getPublicUrl(data.path);setMessage(`Uploaded: ${url.publicUrl}`);list()}}
-  return <Panel title="Media library" subtitle="Upload reusable images, then copy their public URL into any page, treatment, article or gallery item."><form className="media-upload" onSubmit={upload}><input type="file" name="file" accept="image/*" required/><button className="button"><Upload/>Upload image</button></form>{message&&<div className="admin-notice media-message">{message}</div>}<div className="media-grid">{files.map(file=>{const {data}=getSupabase()!.storage.from("site-media").getPublicUrl(file.name);return <button key={file.id||file.name} onClick={()=>navigator.clipboard.writeText(data.publicUrl)} title="Copy image URL"><Image src={data.publicUrl} fill alt={file.name}/><span>Copy URL</span></button>})}</div></Panel>;
+  async function upload(e:FormEvent<HTMLFormElement>){e.preventDefault();const form=e.currentTarget;const file=new FormData(form).get("file") as File;if(!file)return;const path=`${Date.now()}-${file.name.replace(/\s+/g,"-")}`;const {data,error}=await getSupabase()!.storage.from("site-media").upload(path,file);if(error)setMessage(error.message);else if(data){const {data:url}=getSupabase()!.storage.from("site-media").getPublicUrl(data.path);setMessage(`Uploaded successfully. URL ready to use: ${url.publicUrl}`);form.reset();list()}}
+  async function copyUrl(url:string){await navigator.clipboard.writeText(url);setMessage("Image URL copied. Paste it into any image URL field in the CMS.")}
+  async function remove(name:string){if(!confirm(`Delete ${name}? This cannot be undone.`))return;const {error}=await getSupabase()!.storage.from("site-media").remove([name]);if(error)setMessage(error.message);else{setMessage("Image deleted.");list()}}
+  const visible=files.filter(file=>String(file.name||"").toLowerCase().includes(query.toLowerCase()));
+  return <Panel title="Media library" subtitle="Upload reusable images, copy their URLs, and use them in pages, treatments, articles, gallery items or site settings."><form className="media-upload" onSubmit={upload}><input type="file" name="file" accept="image/*" required/><button className="button"><Upload/>Upload image</button></form>{message&&<div className="admin-notice media-message">{message}</div>}<div className="media-toolbar"><strong>{files.length} image{files.length===1?"":"s"}</strong><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search files…" aria-label="Search media files"/></div><div className="media-grid">{visible.map(file=>{const {data}=getSupabase()!.storage.from("site-media").getPublicUrl(file.name);return <article className="media-card" key={file.id||file.name}><button className="media-preview" type="button" onClick={()=>copyUrl(data.publicUrl)} title="Copy image URL"><Image src={data.publicUrl} fill alt={file.name}/><span>Copy URL</span></button><div><small title={file.name}>{file.name}</small><button type="button" className="media-delete" onClick={()=>remove(file.name)}>Delete</button></div></article>})}</div>{!visible.length&&<div className="admin-empty"><FileText/><p>{files.length?"No matching files.":"Upload your first image to start building the media library."}</p></div>}</Panel>;
 }
 
 function Panel({title,subtitle,action,children}:{title:string;subtitle:string;action?:ReactNode;children:ReactNode}){return <section className="admin-panel"><div className="admin-panel-head"><div><h2>{title}</h2><p>{subtitle}</p></div>{action}</div>{children}</section>}

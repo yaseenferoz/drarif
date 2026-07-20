@@ -17,7 +17,9 @@ export function BookingForm({ compact=false }: { compact?: boolean }) {
       user_id:userId, full_name:fd.get("full_name"), mobile_number:fd.get("mobile_number"),
       email:fd.get("email") || null, consultation_type:fd.get("consultation_type"),
       appointment_date:fd.get("appointment_date"), preferred_time:fd.get("preferred_time"),
-      symptoms:fd.get("symptoms"), status:"new"
+      // Status belongs to the clinic workflow. Keeping it out of the request
+      // also supports the original appointments table during its CMS upgrade.
+      symptoms:fd.get("symptoms")
     };
     const supabase = getSupabase();
     if (supabase) {
