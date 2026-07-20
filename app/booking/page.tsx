@@ -1,5 +1,5 @@
 import { BookingForm } from "@/components/booking-form";
-import { Clock3, Phone } from "@/components/icons";
-import { site } from "@/lib/site-data";
+import { PageHero } from "@/components/page-hero";
+import { BookingAsideCopy, ClinicDetails } from "@/components/dynamic-copy";
 export const metadata={title:"Book Appointment"};
-export default function Booking(){return <><section className="page-hero"><div className="shell"><span className="breadcrumb">Home / Appointment</span><h1>Request a consultation.</h1><p>Share a few details and the clinic team will call to confirm your appointment.</p></div></section><section className="section"><div className="shell booking-shell"><div className="booking-aside"><span className="eyebrow">APPOINTMENTS</span><h2>Your care starts with a conversation.</h2><p>New consultations, follow-ups, second opinions and report review requests are welcome.</p><div className="mini-contact"><Phone/><div><small>Direct booking</small><a href={`tel:${site.phoneHref}`}>{site.phone}</a></div></div><div className="mini-contact" style={{marginTop:22}}><Clock3/><div><small>Consultation hours</small><a>{site.hours}</a></div></div></div><BookingForm compact/></div></section></>}
+export default function Booking(){return <><PageHero pageKey="booking" breadcrumb="Appointment"/><section className="section"><div className="shell booking-shell"><div className="booking-aside"><BookingAsideCopy/><ClinicDetails mode="booking"/></div><BookingForm compact/></div></section></>}

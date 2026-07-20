@@ -9,6 +9,47 @@ export type Article = {
   image_url: string; reading_minutes: number; content: string; published?: boolean; published_at?: string;
 };
 
+export type SitePage = {
+  id?: string;
+  page_key: string;
+  title: string;
+  eyebrow: string;
+  description: string;
+  content: Record<string, string>;
+  published?: boolean;
+  updated_at?: string;
+};
+
+export type NavigationItem = {
+  id?: string;
+  label: string;
+  href: string;
+  location: "header" | "footer";
+  sort_order: number;
+  visible: boolean;
+};
+
+export type GalleryItem = {
+  id?: string;
+  title: string;
+  caption: string;
+  image_url: string;
+  category: string;
+  sort_order: number;
+  published: boolean;
+};
+
+export type SiteSettings = {
+  logo_url: string;
+  doctor_name: string;
+  credentials: string;
+  phone: string;
+  email: string;
+  hospital: string;
+  location: string;
+  hours: string;
+};
+
 export const site = {
   doctor: "Dr. Arif Raza",
   credentials: "Consultant GI, HPB, GI Oncology & Advanced Laparoscopic Surgeon",
@@ -20,6 +61,46 @@ export const site = {
   location: "Kalaburagi, Karnataka",
   hours: "Monday – Saturday · 9:00 AM – 7:00 PM"
 };
+
+export const defaultSettings: SiteSettings = {
+  logo_url: "/assets/img/gastroarif.png",
+  doctor_name: site.doctor,
+  credentials: site.credentials,
+  phone: site.phone,
+  email: site.email,
+  hospital: site.hospital,
+  location: site.location,
+  hours: site.hours
+};
+
+export const defaultNavigation: NavigationItem[] = [
+  { label:"About", href:"/about", location:"header", sort_order:1, visible:true },
+  { label:"Treatments", href:"/treatments", location:"header", sort_order:2, visible:true },
+  { label:"Health library", href:"/articles", location:"header", sort_order:3, visible:true },
+  { label:"Gallery", href:"/gallery", location:"header", sort_order:4, visible:true },
+  { label:"Contact", href:"/contact", location:"header", sort_order:5, visible:true }
+];
+
+export const defaultPages: SitePage[] = [
+  { page_key:"home", eyebrow:"APPOINTMENTS OPEN THIS WEEK", title:"Advanced digestive care. Humanly delivered.", description:"Specialist GI, cancer, liver–pancreas and keyhole surgery with clear guidance at every step.", content:{ expertise_title:"Care for the whole digestive system.", expertise_text:"From common conditions to complex cancer surgery, each treatment begins with an accurate diagnosis and a plan built around you.", about_title:"Expert decisions. Honest conversations.", about_text:"Advanced training, clear explanations and structured support through recovery.", articles_title:"Knowledge for better decisions." }, published:true },
+  { page_key:"about", eyebrow:"ABOUT DR. ARIF RAZA", title:"Specialist expertise, close to home.", description:"Advanced gastrointestinal and laparoscopic surgical care grounded in careful diagnosis, honest advice and compassionate follow-up.", content:{ heading:"Focused GI, HPB and cancer surgery care in Kalaburagi.", body:"Dr. Arif Raza is a Consultant Gastrointestinal, GI Oncology, HPB and Advanced Laparoscopic Surgeon with more than 13 years of surgical experience. He trained in Surgical Gastroenterology at the Asian Institute of Gastroenterology, Hyderabad, and returned to Kalaburagi to make advanced digestive surgery accessible closer to home.", secondary:"His approach is simple: explain the diagnosis plainly, discuss the available choices honestly and recommend surgery only when it is the right path for the patient." }, published:true },
+  { page_key:"treatments", eyebrow:"OUR SPECIALITIES", title:"Specialist care for digestive conditions.", description:"Explore diagnostic, endoscopic and surgical options. The right plan is decided after detailed consultation and review of your reports.", content:{}, published:true },
+  { page_key:"articles", eyebrow:"HEALTH LIBRARY", title:"Clear guidance for digestive health.", description:"Practical, doctor-reviewed reading to help you recognise symptoms, prepare for procedures and make informed care decisions.", content:{}, published:true },
+  { page_key:"gallery", eyebrow:"CLINIC GALLERY", title:"Care, facilities and patient education.", description:"A closer look at the clinic, specialist services and the health education resources shared with patients.", content:{}, published:true },
+  { page_key:"booking", eyebrow:"APPOINTMENTS", title:"Request a consultation.", description:"Share a few details and the clinic team will call to confirm your appointment.", content:{ aside_title:"Your care starts with a conversation.", aside_text:"New consultations, follow-ups, second opinions and report review requests are welcome." }, published:true },
+  { page_key:"contact", eyebrow:"CONTACT", title:"We’re here to help.", description:"Contact the clinic for appointments, report review and specialist surgical consultation details.", content:{}, published:true },
+  { page_key:"privacy", eyebrow:"LEGAL", title:"Privacy policy", description:"How submitted information is handled and protected.", content:{ body:"Information submitted through appointment and contact forms is used to respond to your request and support clinic administration. Access to appointment records is restricted through authenticated accounts and role-based database policies." }, published:true },
+  { page_key:"terms", eyebrow:"LEGAL", title:"Terms & conditions", description:"Important information about appointments and educational content.", content:{ body:"Website information is educational and is not a diagnosis, prescription or emergency service. Appointment requests are not confirmed until the clinic team contacts you." }, published:true }
+];
+
+export const defaultGallery: GalleryItem[] = [
+  { title:"Specialist consultation", caption:"Clear guidance for digestive and surgical concerns.", image_url:"/assets/img/aboutarif.png", category:"Clinic", sort_order:1, published:true },
+  { title:"Advanced laparoscopic care", caption:"Modern keyhole surgery for suitable conditions.", image_url:"/assets/img/service/laprosocopic.png", category:"Treatments", sort_order:2, published:true },
+  { title:"GI cancer care", caption:"Coordinated planning for complex gastrointestinal cancers.", image_url:"/assets/img/team/gicancer.png", category:"Treatments", sort_order:3, published:true },
+  { title:"Digestive health education", caption:"Practical information patients can understand and use.", image_url:"/assets/img/lifestyle.png", category:"Education", sort_order:4, published:true },
+  { title:"Gallbladder surgery", caption:"Assessment and laparoscopic treatment for symptomatic gallstones.", image_url:"/assets/img/team/gallbladder.png", category:"Treatments", sort_order:5, published:true },
+  { title:"Hernia care", caption:"Individual planning for open and laparoscopic hernia repair.", image_url:"/assets/img/team/hernia.png", category:"Treatments", sort_order:6, published:true }
+];
 
 const common = {
   symptoms: ["Persistent or worsening abdominal pain", "Vomiting, bleeding or altered bowel habits", "Unexplained weight loss, anemia or jaundice"],

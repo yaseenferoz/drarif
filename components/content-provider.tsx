@@ -1,29 +1,53 @@
 "use client";
 
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
-import { articles as defaultsArticles, treatments as defaultsTreatments, Article, Treatment } from "@/lib/site-data";
+import {
+  articles as defaultsArticles, treatments as defaultsTreatments, defaultGallery, defaultNavigation,
+  defaultPages, defaultSettings, Article, GalleryItem, NavigationItem, SitePage, SiteSettings, Treatment
+} from "@/lib/site-data";
 import { getSupabase } from "@/lib/supabase";
 
-type ContentState = { treatments: Treatment[]; articles: Article[]; loading: boolean; refresh:()=>Promise<void> };
-const ContentContext = createContext<ContentState>({treatments:defaultsTreatments, articles:defaultsArticles, loading:false, refresh:async()=>{}});
+type ContentState = {
+  treatments: Treatment[]; articles: Article[]; pages: SitePage[]; navigation: NavigationItem[];
+  gallery: GalleryItem[]; settings: SiteSettings; loading: boolean; refresh:()=>Promise<void>;
+  page:(key:string)=>SitePage;
+};
+const ContentContext = createContext<ContentState>({
+  treatments:defaultsTreatments, articles:defaultsArticles, pages:defaultPages, navigation:defaultNavigation,
+  gallery:defaultGallery, settings:defaultSettings, loading:false, refresh:async()=>{},
+  page:(key)=>defaultPages.find(p=>p.page_key===key) || defaultPages[0]
+});
 
 export function ContentProvider({children}:{children:ReactNode}) {
   const [treatments,setTreatments]=useState(defaultsTreatments);
   const [articles,setArticles]=useState(defaultsArticles);
+  const [pages,setPages]=useState(defaultPages);
+  const [navigation,setNavigation]=useState(defaultNavigation);
+  const [gallery,setGallery]=useState(defaultGallery);
+  const [settings,setSettings]=useState(defaultSettings);
   const [loading,setLoading]=useState(true);
   async function refresh(){
     const supabase=getSupabase();
     if(supabase){
-      const [t,a]=await Promise.all([
+      const [t,a,p,n,g,s]=await Promise.all([
         supabase.from("treatments").select("*").eq("published",true).order("sort_order"),
-        supabase.from("articles").select("*").eq("published",true).order("published_at",{ascending:false})
+        supabase.from("articles").select("*").eq("published",true).order("published_at",{ascending:false}),
+        supabase.from("site_pages").select("*").eq("published",true),
+        supabase.from("navigation_items").select("*").eq("visible",true).order("sort_order"),
+        supabase.from("gallery_items").select("*").eq("published",true).order("sort_order"),
+        supabase.from("site_settings").select("*").eq("key","general").maybeSingle()
       ]);
       if(t.data?.length) setTreatments(t.data);
       if(a.data?.length) setArticles(a.data);
+      if(p.data?.length) setPages(defaultPages.map(item=>p.data.find(row=>row.page_key===item.page_key) || item));
+      if(n.data?.length) setNavigation(n.data);
+      if(g.data?.length) setGallery(g.data);
+      if(s.data?.value) setSettings({...defaultSettings,...s.data.value});
     }
     setLoading(false);
   }
   useEffect(()=>{refresh()},[]);
-  return <ContentContext.Provider value={{treatments,articles,loading,refresh}}>{children}</ContentContext.Provider>;
+  const page=(key:string)=>pages.find(p=>p.page_key===key) || defaultPages.find(p=>p.page_key===key) || defaultPages[0];
+  return <ContentContext.Provider value={{treatments,articles,pages,navigation,gallery,settings,loading,refresh,page}}>{children}</ContentContext.Provider>;
 }
 export const useContent=()=>useContext(ContentContext);
