@@ -13,6 +13,7 @@ const treatmentSlugs = [
 ];
 
 const nextConfig: NextConfig = {
+  distDir: "dist",
   images: { unoptimized: true },
   async redirects() {
     return [
