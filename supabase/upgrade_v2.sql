@@ -56,6 +56,14 @@ create policy "admins manage navigation" on public.navigation_items for all usin
 create policy "public published gallery" on public.gallery_items for select using (published or public.is_admin());
 create policy "admins manage gallery" on public.gallery_items for all using (public.is_admin()) with check (public.is_admin());
 
+grant usage on schema public to anon, authenticated;
+grant select on public.site_pages, public.navigation_items, public.gallery_items, public.site_settings to anon;
+grant select on public.profiles, public.treatments, public.articles, public.site_settings, public.site_pages, public.navigation_items, public.gallery_items to authenticated;
+grant insert on public.appointments to anon, authenticated;
+grant select, update on public.appointments to authenticated;
+grant all on public.treatments, public.articles, public.site_settings, public.site_pages, public.navigation_items, public.gallery_items to authenticated;
+grant select, insert, update on public.profiles to authenticated;
+
 insert into public.site_pages(page_key,eyebrow,title,description,content) values
 ('home','APPOINTMENTS OPEN THIS WEEK','Advanced digestive care. Humanly delivered.','Specialist GI, cancer, liver–pancreas and keyhole surgery with clear guidance at every step.','{"expertise_title":"Care for the whole digestive system.","expertise_text":"From common conditions to complex cancer surgery, each treatment begins with an accurate diagnosis and a plan built around you.","about_title":"Expert decisions. Honest conversations.","about_text":"Advanced training, clear explanations and structured support through recovery.","articles_title":"Knowledge for better decisions."}'),
 ('about','ABOUT DR. ARIF RAZA','Specialist expertise, close to home.','Advanced gastrointestinal and laparoscopic surgical care grounded in careful diagnosis, honest advice and compassionate follow-up.','{"heading":"Focused GI, HPB and cancer surgery care in Kalaburagi.","body":"Dr. Arif Raza is a Consultant Gastrointestinal, GI Oncology, HPB and Advanced Laparoscopic Surgeon with more than 13 years of surgical experience.","secondary":"His approach is to explain the diagnosis plainly, discuss choices honestly and recommend surgery only when it is appropriate."}'),

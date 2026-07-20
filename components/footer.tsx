@@ -11,7 +11,7 @@ export function Footer() {
   const links=footerLinks.length?footerLinks:navigation.filter(item=>item.location==="header"&&item.visible).slice(0,5);
   return <footer className="footer">
     <div className="shell footer-grid">
-      <div><Image className="footer-logo" src={settings.logo_url} width={210} height={75} alt={settings.doctor_name}/><p>{settings.credentials}, offering considered, evidence-based care in {settings.location}.</p></div>
+      <div><span className="footer-logo-wrap"><Image className="footer-logo" src={settings.logo_url} width={210} height={75} alt={settings.doctor_name}/></span><p>{settings.credentials}, offering considered, evidence-based care in {settings.location}.</p></div>
       <div><h3>Explore</h3>{links.map(item=><Link href={item.href} key={`${item.label}-${item.href}`}>{item.label}</Link>)}<Link href="/booking">Book appointment</Link></div>
       <div><h3>Visit</h3><p><MapPin size={16}/>{settings.hospital}, {settings.location}</p><a href={`tel:${settings.phone.replace(/\s/g,"")}`}><Phone size={16}/>{settings.phone}</a><a href={`mailto:${settings.email}`}><Mail size={16}/>{settings.email}</a></div>
       <div className="footer-callout"><span>Need an appointment?</span><strong>Speak with our care team.</strong><a className="button button-light" href={`tel:${settings.phone.replace(/\s/g,"")}`}>Call clinic</a></div>

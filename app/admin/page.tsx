@@ -55,6 +55,9 @@ export default function Admin(){
     if(roleResult.error){setMessage(`Could not verify your administrator role: ${roleResult.error}`);setLoading(false);return}
     if(roleResult.role!=="admin"){setMessage(`Signed in as patient (${user.email}). Promote this exact account in Supabase, then refresh this page.`);setLoading(false);return}
     setAllowed(true);
+    const queries=[
+      "appointments","treatments","articles","site_pages","navigation_items","gallery_items","site_settings"
+    ];
     const results=await Promise.all([
       s.from("appointments").select("*").order("created_at",{ascending:false}),
       s.from("treatments").select("*").order("sort_order"),
@@ -71,8 +74,11 @@ export default function Admin(){
     if(results[4].data?.length)setNavigation(results[4].data);
     if(results[5].data?.length)setGallery(results[5].data);
     if(results[6].data?.value)setSettings({...defaultSettings,...results[6].data.value});
-    const missing=results.slice(3,6).filter(r=>r.error).map(r=>r.error?.message);
-    if(missing.length)setMessage("CMS upgrade tables are not installed yet. Run supabase/upgrade_v2.sql once, then refresh this page.");
+    const queryErrors=results
+      .map((result,index)=>result.error ? `${queries[index]}: ${result.error.message}` : "")
+      .filter(Boolean);
+    if(queryErrors.length)setMessage(`Supabase query issue: ${queryErrors.join(" | ")}. Run the latest supabase/upgrade_v2.sql again, including the GRANT section, then refresh this page.`);
+    else setMessage("");
     setLoading(false);
   }
   useEffect(()=>{load()},[]);

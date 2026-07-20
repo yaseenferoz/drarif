@@ -102,3 +102,11 @@ create policy "public media read" on storage.objects for select using (bucket_id
 create policy "admins upload media" on storage.objects for insert with check (bucket_id='site-media' and public.is_admin());
 create policy "admins update media" on storage.objects for update using (bucket_id='site-media' and public.is_admin());
 create policy "admins delete media" on storage.objects for delete using (bucket_id='site-media' and public.is_admin());
+
+grant usage on schema public to anon, authenticated;
+grant select on public.treatments, public.articles, public.site_settings to anon;
+grant select on public.profiles, public.treatments, public.articles, public.site_settings to authenticated;
+grant insert on public.appointments to anon, authenticated;
+grant select, update on public.appointments to authenticated;
+grant all on public.treatments, public.articles, public.site_settings to authenticated;
+grant select, insert, update on public.profiles to authenticated;

@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
-import { ContentProvider } from "@/components/content-provider";
+import { SiteChrome } from "@/components/site-chrome";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({children}:{children:React.ReactNode}) {
-  return <html lang="en"><body><ContentProvider><Header/><main>{children}</main><Footer/></ContentProvider></body></html>;
+  return <html lang="en" suppressHydrationWarning><body suppressHydrationWarning><SiteChrome>{children}</SiteChrome></body></html>;
 }
