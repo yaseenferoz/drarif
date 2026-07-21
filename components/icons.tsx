@@ -1,5 +1,5 @@
 export {
   ArrowRight, CalendarDays, Check, ChevronDown, ChevronRight, CircleUserRound, Clock3, FileText,
   HeartPulse, Images, LayoutDashboard, LockKeyhole, LogOut, Mail, MapPin, Menu, MessageCircle,
-  Pencil, Phone, Plus, Search, Settings, ShieldCheck, Sparkles, Stethoscope, Trash2, Upload, Users, X
+  Eye, EyeOff, Pencil, Phone, Plus, Search, Settings, ShieldCheck, Sparkles, Stethoscope, Trash2, Upload, Users, X
 } from "lucide-react";

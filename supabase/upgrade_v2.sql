@@ -1,6 +1,9 @@
 -- CMS and admin upgrade. Safe to run more than once.
 -- Run this in Supabase SQL Editor, then sign out and sign in again.
 
+-- Optional clinician-review intake summary (never an autonomous diagnosis).
+alter table public.appointments add column if not exists pre_diagnosis_report text;
+
 insert into public.profiles (id, full_name)
 select id, coalesce(raw_user_meta_data->>'full_name', email, '')
 from auth.users

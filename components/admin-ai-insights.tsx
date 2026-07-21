@@ -1,0 +1,15 @@
+"use client";
+import { useState } from "react";
+
+type Appointment = Record<string, any>;
+function InsightBlocks({ text }: { text: string }) {
+  const lines = text.split("\n").map(line => line.trim()).filter(Boolean);
+  const blocks: string[][] = [];
+  for (const line of lines) { if (/^\*\*.*\*\*$/.test(line) || /^(CURRENT SNAPSHOT|OPERATIONAL TRENDS|PRACTICAL NEXT STEPS|LOCAL OPERATIONAL INSIGHTS)/i.test(line)) blocks.push([line]); else if (blocks.length) blocks[blocks.length - 1].push(line); else blocks.push([line]); }
+  return <div className="admin-ai-blocks">{blocks.map((block, index) => { const title = (block[0] || "").replace(/^\*+|\*+$/g, "").trim(); const body = block.slice(1); return <article className={`admin-ai-block ${index === 0 ? "admin-ai-block-lead" : ""}`} key={`${title}-${index}`}><h3>{title}</h3>{body.length ? <ul>{body.map((line, lineIndex) => <li key={lineIndex}>{line.replace(/^[-•]\s*/, "").replace(/^\*+|\*+$/g, "")}</li>)}</ul> : null}</article>; })}</div>;
+}
+export function AdminAiInsights({ appointments }: { appointments: Appointment[] }) {
+  const [insights, setInsights] = useState(""), [busy, setBusy] = useState(false), [error, setError] = useState(""), [source, setSource] = useState("");
+  async function generate() { setBusy(true); setError(""); const statusCounts = appointments.reduce<Record<string, number>>((out, item) => { const key = String(item.status || "new").toLowerCase(); out[key] = (out[key] || 0) + 1; return out; }, {}); const typeCounts = appointments.reduce<Record<string, number>>((out, item) => { const key = String(item.consultation_type || "Unspecified"); out[key] = (out[key] || 0) + 1; return out; }, {}); const dates = appointments.map(item => String(item.appointment_date || "")).filter(Boolean).sort(); try { const response = await fetch("/api/admin-insights", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ total: appointments.length, statusCounts, consultationTypes: typeCounts, appointmentDates: dates, preConsultationReports: appointments.filter(item => item.pre_diagnosis_report).length }) }); const data = await response.json(); if (!response.ok) throw new Error(data.error || "Insights unavailable"); setInsights(String(data.text || "No operational insight was returned.")); setSource(String(data.source || "local")); } catch (err) { setError(err instanceof Error ? err.message : "Insights unavailable"); } finally { setBusy(false); } }
+  return <section className="admin-ai-insights"><div className="admin-ai-head"><div><span>CLINIC OPERATIONS AI</span><h2>Dashboard insights</h2><p>Understand demand, follow-up workload and intake coverage at a glance.</p></div><button className="button button-small" onClick={generate} disabled={busy}>{busy ? "Analysing…" : insights ? "Refresh insights" : "Analyse bookings"}</button></div>{source && <span className="admin-ai-source"><i />{source === "local" ? "Local operational analysis" : `${source} analysis`}</span>}{error && <p className="form-error">{error}</p>}{insights && <InsightBlocks text={insights} />}</section>;
+}
