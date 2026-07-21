@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import {
   articles as defaultsArticles, treatments as defaultsTreatments, defaultGallery, defaultNavigation,
   defaultPages, defaultSettings, Article, GalleryItem, NavigationItem, SitePage, SiteSettings, Treatment
@@ -19,6 +20,7 @@ const ContentContext = createContext<ContentState>({
 });
 
 export function ContentProvider({children}:{children:ReactNode}) {
+  const pathname=usePathname();
   const [treatments,setTreatments]=useState(defaultsTreatments);
   const [articles,setArticles]=useState(defaultsArticles);
   const [pages,setPages]=useState(defaultPages);
@@ -39,14 +41,14 @@ export function ContentProvider({children}:{children:ReactNode}) {
       ]);
       if(t.data?.length){const bySlug=new Map(t.data.map(row=>[row.slug,row]));setTreatments([...defaultsTreatments.map(item=>bySlug.get(item.slug)||item),...t.data.filter(row=>!defaultsTreatments.some(item=>item.slug===row.slug))].filter(item=>item.published!==false));}
       if(a.data?.length){const bySlug=new Map(a.data.map(row=>[row.slug,row]));setArticles([...defaultsArticles.map(item=>bySlug.get(item.slug)||item),...a.data.filter(row=>!defaultsArticles.some(item=>item.slug===row.slug))].filter(item=>item.published!==false));}
-      if(p.data?.length) setPages(defaultPages.map(item=>p.data.find(row=>row.page_key===item.page_key) || item));
+      if(p.data?.length) setPages([...defaultPages.map(item=>p.data.find(row=>row.page_key===item.page_key) || item),...p.data.filter(row=>!defaultPages.some(item=>item.page_key===row.page_key))]);
       if(n.data?.length) setNavigation(n.data);
       if(g.data?.length) setGallery([...g.data, ...defaultGallery.filter(item=>!g.data.some(row=>row.image_url===item.image_url))]);
       if(s.data?.value) setSettings({...defaultSettings,...s.data.value});
     }
     setLoading(false);
   }
-  useEffect(()=>{refresh()},[]);
+  useEffect(()=>{refresh()},[pathname]);
   const page=(key:string)=>pages.find(p=>p.page_key===key) || defaultPages.find(p=>p.page_key===key) || defaultPages[0];
   return <ContentContext.Provider value={{treatments,articles,pages,navigation,gallery,settings,loading,refresh,page}}>{children}</ContentContext.Provider>;
 }

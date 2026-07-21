@@ -13,7 +13,7 @@ import { practiceLogo } from "@/lib/brand";
 export function Header() {
   const [open, setOpen] = useState(false);
   const path = usePathname();
-  const {navigation,settings,treatments,articles}=useContent();
+  const {navigation,settings,treatments,articles,pages}=useContent();
   const {role}=useUserRole();
   const links=navigation.filter(item=>item.location==="header"&&item.visible).sort((a,b)=>a.sort_order-b.sort_order);
   const accountHref=role==="admin"?"/admin":"/portal";
@@ -37,8 +37,11 @@ export function Header() {
           </Link>
           <nav className="nav" aria-label="Main navigation">
             {links.map(item => {
-              const children=menuItems[item.href];
-              return children ? <div className="nav-menu" key={`${item.label}-${item.href}`}><Link className={path.startsWith(item.href) ? "active":""} href={item.href}>{item.label}<ChevronDown size={14}/></Link><div className="nav-dropdown">{children.map(child=><Link href={child.href} key={child.href}>{child.label}</Link>)}<Link className="nav-dropdown-all" href={item.href}>View all {item.label.toLowerCase()}</Link></div></div> : <Link className={path.startsWith(item.href) ? "active":""} href={item.href} key={`${item.label}-${item.href}`}>{item.label}</Link>
+              const inferredPage=pages.find(page=>page.page_key===item.label.toLowerCase().trim().replace(/\s+/g,"-"));
+              const href=item.href==="/"&&inferredPage&&inferredPage.page_key!=="home"?`/${inferredPage.page_key}`:item.href;
+              const children=menuItems[href];
+              const active=href==="/"?path==="/":path.startsWith(href);
+              return children ? <div className="nav-menu" key={`${item.label}-${item.href}`}><Link className={active ? "active":""} href={href}>{item.label}<ChevronDown size={14}/></Link><div className="nav-dropdown">{children.map(child=><Link href={child.href} key={child.href}>{child.label}</Link>)}<Link className="nav-dropdown-all" href={href}>View all {item.label.toLowerCase()}</Link></div></div> : <Link className={active ? "active":""} href={href} key={`${item.label}-${item.href}`}>{item.label}</Link>
             })}
           </nav>
           <div className="header-actions">
@@ -47,7 +50,7 @@ export function Header() {
             <button className="menu-toggle" onClick={()=>setOpen(!open)} aria-label="Toggle menu">{open?<X/>:<Menu/>}</button>
           </div>
         </div>
-        {open && <nav className="mobile-nav">{links.map(item=><div key={`${item.label}-${item.href}`}><Link onClick={()=>setOpen(false)} href={item.href}>{item.label}</Link>{menuItems[item.href]?.map(child=><Link className="mobile-subnav-link" onClick={()=>setOpen(false)} href={child.href} key={child.href}>{child.label}</Link>)}</div>)}<Link onClick={()=>setOpen(false)} href={accountHref}>{role==="admin"?"Admin dashboard":"Patient portal"}</Link><Link onClick={()=>setOpen(false)} href="/booking">Book appointment</Link></nav>}
+        {open && <nav className="mobile-nav">{links.map(item=>{const inferred=pages.find(page=>page.page_key===item.label.toLowerCase().trim().replace(/\s+/g,"-"));const href=item.href==="/"&&inferred&&inferred.page_key!=="home"?`/${inferred.page_key}`:item.href;return <div key={`${item.label}-${item.href}`}><Link onClick={()=>setOpen(false)} href={href}>{item.label}</Link>{menuItems[href]?.map(child=><Link className="mobile-subnav-link" onClick={()=>setOpen(false)} href={child.href} key={child.href}>{child.label}</Link>)}</div>})}<Link onClick={()=>setOpen(false)} href={accountHref}>{role==="admin"?"Admin dashboard":"Patient portal"}</Link><Link onClick={()=>setOpen(false)} href="/booking">Book appointment</Link></nav>}
       </header>
     </>
   );

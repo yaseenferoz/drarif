@@ -14,7 +14,14 @@ export function HomeSectionCopy({field,fallback}:{field:string;fallback:string})
 
 export function AboutMainCopy(){
   const data=useContent().page("about");
+  if(data.content?.rich_html) return <div className="rich-content about-rich-copy" dangerouslySetInnerHTML={{__html:String(data.content.rich_html)}}/>;
   return <><span className="eyebrow">{data.eyebrow}</span><h2>{data.content.heading||data.title}</h2><p>{data.content.body||data.description}</p>{data.content.secondary&&<p>{data.content.secondary}</p>}</>;
+}
+
+export function AboutAdditionalSections(){
+  const sections=useContent().page("about").content?.sections;
+  if(!Array.isArray(sections)||!sections.length)return null;
+  return <>{sections.map((section:any,index)=><section className="section cms-extra-section" key={`${section.id||section.heading||"section"}-${index}`}><div className="shell cms-extra-card"><span className="eyebrow">{section.eyebrow||"CLINICAL NOTE"}</span>{section.heading&&<h2>{section.heading}</h2>}{section.rich_html?<div className="rich-content" dangerouslySetInnerHTML={{__html:String(section.rich_html)}}/>:<>{section.body&&<p>{section.body}</p>}{Array.isArray(section.items)&&<ul>{section.items.map((item:string,itemIndex:number)=><li key={`${item}-${itemIndex}`}>{item}</li>)}</ul>}</>}</div></section>)}</>;
 }
 
 export function BookingAsideCopy(){
