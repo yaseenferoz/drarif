@@ -23,6 +23,47 @@ body {
   font-family: "DM Sans", sans-serif;
   background: #fff;
 }
+.scroll-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 60;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #087c78, #07515a);
+  color: #fff;
+  box-shadow:
+    0 12px 28px rgba(5, 57, 65, 0.24),
+    0 0 0 5px rgba(232, 247, 242, 0.82);
+  cursor: pointer;
+  font-size: 25px;
+  line-height: 1;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.scroll-to-top:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 16px 32px rgba(5, 57, 65, 0.3),
+    0 0 0 5px rgba(232, 247, 242, 0.95);
+}
+.scroll-to-top:focus-visible {
+  outline: 3px solid #e5bf57;
+  outline-offset: 3px;
+}
+@media (max-width: 620px) {
+  .scroll-to-top {
+    right: 16px;
+    bottom: 16px;
+    width: 44px;
+    height: 44px;
+  }
+}
 a {
   color: inherit;
   text-decoration: none;
