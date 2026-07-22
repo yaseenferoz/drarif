@@ -16,7 +16,7 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
     const result = await askProviders([{ role: "system", content: SYSTEM }, { role: "user", content: JSON.stringify(data).slice(0, 12000) }]);
-    if (!result) return NextResponse.json({ text: localInsights(data), source: "local" });
-    return NextResponse.json({ text: result.text, source: result.provider });
-  } catch { return NextResponse.json({ text: localInsights({}), source: "local" }); }
+    if (!result) return NextResponse.json({ text: localInsights(data), source: "protected" });
+    return NextResponse.json({ text: result.text, source: "protected" });
+  } catch { return NextResponse.json({ text: localInsights({}), source: "protected" }); }
 }

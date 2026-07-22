@@ -6,6 +6,23 @@ const providers = [
   { name: "openrouter", key: process.env.OPENROUTER_API_KEY, url: "https://openrouter.ai/api/v1/chat/completions", model: process.env.OPENROUTER_MODEL || "openrouter/free" },
 ];
 
+async function requestBedrock(messages: ChatMessage[], json: boolean) {
+  const token = process.env.AWS_BEARER_TOKEN_BEDROCK;
+  if (!token) return null;
+  const region = process.env.AWS_REGION || "us-east-1";
+  const model = process.env.BEDROCK_MODEL_ID || "us.amazon.nova-2-lite-v1:0";
+  const system = messages.filter(message => message.role === "system").map(message => ({ text: message.content }));
+  const conversation = messages.filter(message => message.role !== "system").map(message => ({ role: message.role, content: [{ text: message.content }] }));
+  const controller = new AbortController(); const timeout = setTimeout(() => controller.abort(), 12000);
+  try {
+    const response = await fetch(`https://bedrock-runtime.${region}.amazonaws.com/model/${encodeURIComponent(model)}/converse`, { method: "POST", signal: controller.signal, headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify({ ...(system.length ? { system } : {}), messages: conversation, inferenceConfig: { temperature: 0, maxTokens: 700, ...(json ? { stopSequences: [] } : {}) } }) });
+    if (!response.ok) return null;
+    const data = await response.json();
+    const text = data?.output?.message?.content?.map((part: any) => part.text || "").join("");
+    return typeof text === "string" && text.trim() ? { text: text.trim(), provider: "amazon-nova-2-lite" } : null;
+  } catch { return null; } finally { clearTimeout(timeout); }
+}
+
 async function requestOpenAI(provider: typeof providers[number], messages: ChatMessage[], json: boolean) {
   if (!provider.key) return null;
   const controller = new AbortController(); const timeout = setTimeout(() => controller.abort(), 7000);
@@ -30,6 +47,7 @@ async function requestGemini(messages: ChatMessage[], json: boolean) {
 }
 
 export async function askProviders(messages: ChatMessage[], json = false) {
+  const bedrock = await requestBedrock(messages, json); if (bedrock) return bedrock;
   for (const provider of providers) { const result = await requestOpenAI(provider, messages, json); if (result) return result; }
   return requestGemini(messages, json);
 }

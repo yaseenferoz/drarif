@@ -158,3 +158,10 @@ select u.email, p.id, p.role
 from auth.users u
 join public.profiles p on p.id = u.id
 where lower(btrim(u.email)) = lower('yaseenfiroz@gmail.com');
+
+-- Appointment administration privileges (required for status updates and
+-- deleting selected records in the admin portal).
+grant select, update, delete on public.appointments to authenticated;
+drop policy if exists "admins delete appointments" on public.appointments;
+create policy "admins delete appointments" on public.appointments
+for delete using (public.is_admin());

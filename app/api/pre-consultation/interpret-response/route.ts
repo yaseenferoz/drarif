@@ -16,7 +16,7 @@ export async function POST(request: Request) {
     if (parsed.matchedSuggestionId && !suggestions.some((item: any) => item.id === parsed.matchedSuggestionId)) parsed.understood = false;
     if (!parsed.understood) return NextResponse.json({ understood: false, clarificationQuestion: "I couldn’t map that to this question. Please choose the closest option below or rephrase it." });
     const matched = suggestions.find((item: any) => item.id === parsed.matchedSuggestionId);
-    return NextResponse.json({ understood: true, matchedSuggestionId: matched?.id, value: parsed.value ?? matched?.value ?? responseText, provider: result.provider });
+    return NextResponse.json({ understood: true, matchedSuggestionId: matched?.id, value: parsed.value ?? matched?.value ?? responseText });
   } catch {
     return NextResponse.json({ understood: false, clarificationQuestion: "Please choose the closest option below or rephrase your response." });
   }

@@ -8,6 +8,6 @@ export async function POST(request: Request) {
   const messages = Array.isArray(body.messages) ? body.messages.slice(-12).map((item: any) => ({ role: item.role === "assistant" ? "assistant" : "user", content: String(item.content || "").slice(0, 1000) })) : [];
   if (!messages.length) return NextResponse.json({ error: "A conversation is required." }, { status: 400 });
   const result = await askProviders([{ role: "system", content: SYSTEM }, ...messages]);
-  if (!result) return NextResponse.json({ reply: "I’m having trouble connecting right now. Please describe your main concern, how long it has been present, and whether it is getting worse. The clinic team will review it.", source: "local" });
-  return NextResponse.json({ reply: result.text, source: result.provider });
+  if (!result) return NextResponse.json({ reply: "I’m having trouble connecting right now. Please describe your main concern, how long it has been present, and whether it is getting worse. The clinic team will review it.", source: "protected" });
+  return NextResponse.json({ reply: result.text, source: "protected" });
 }

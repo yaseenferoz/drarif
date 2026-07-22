@@ -9,7 +9,7 @@ export async function POST(request: Request) {
   if (!localReport) return NextResponse.json({ error: "A local assessment report is required." }, { status: 400 });
   try {
     const result = await askProviders([{ role: "system", content: SYSTEM }, { role: "user", content: localReport.slice(0, 12000) }]);
-    if (result) return NextResponse.json({ text: result.text, source: result.provider });
+    if (result) return NextResponse.json({ text: result.text, source: "protected" });
   } catch { /* local report remains the source of truth */ }
-  return NextResponse.json({ text: localReport, source: "local" });
+  return NextResponse.json({ text: localReport, source: "protected" });
 }

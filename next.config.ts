@@ -13,6 +13,7 @@ const treatmentSlugs = [
 ];
 
 const nextConfig: NextConfig = {
+  poweredByHeader: false,
   images: { unoptimized: true },
   async redirects() {
     return [
