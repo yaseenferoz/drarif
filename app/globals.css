@@ -1163,6 +1163,41 @@ img {
 .footer-callout strong {
   display: block;
 }
+.footer-socials {
+  margin-top: 18px;
+}
+.footer-socials > span {
+  display: block;
+  margin-bottom: 8px;
+  color: #8fc8c1;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.footer-socials > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+.footer-socials a {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(173, 229, 216, 0.22);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: #d9f3ed !important;
+  font-size: 11px;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+.footer-socials a:hover {
+  background: rgba(105, 221, 195, 0.14);
+  border-color: #69ddc3;
+  transform: translateY(-1px);
+}
 .footer-callout span {
   font-size: 11px;
   color: #91a8ad;
@@ -1794,6 +1829,58 @@ img {
   display: block;
   padding: 10px 4px;
   font-weight: 700;
+}
+.mobile-nav-parent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mobile-nav-parent a {
+  flex: 1;
+}
+.mobile-nav a.mobile-active {
+  color: var(--teal);
+  background: linear-gradient(90deg, rgba(8, 124, 120, 0.12), transparent);
+  border-left: 3px solid #e2b84d;
+  padding-left: 13px;
+  border-radius: 0 10px 10px 0;
+}
+.mobile-nav-parent a.mobile-active {
+  font-weight: 850;
+}
+.mobile-nav-parent button {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 1px solid rgba(8, 124, 120, 0.2);
+  border-radius: 14px;
+  background: linear-gradient(145deg, #f1faf7, #dcefeb);
+  color: var(--teal);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+  box-shadow: 0 7px 16px rgba(5, 57, 65, 0.1);
+}
+.mobile-nav-parent button::after {
+  content: "";
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #e2b84d;
+  box-shadow: 0 0 0 3px rgba(226, 184, 77, 0.16);
+}
+.mobile-nav-parent button[aria-expanded="true"] {
+  transform: rotate(180deg);
+  background: linear-gradient(145deg, #087c78, #07515a);
+  color: #fff;
+  box-shadow: 0 10px 22px rgba(5, 57, 65, 0.22);
 }
 .footer-logo {
   width: 210px;
