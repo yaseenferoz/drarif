@@ -19,6 +19,7 @@ type Booking = {
   preferred_time: string;
   consultation_type: string;
   status: string;
+  symptoms?: string | null;
 };
 type Profile = {
   id: string;
@@ -342,9 +343,15 @@ export default function Portal() {
                 ) : items.length ? (
                   items.map((x) => (
                     <div className="booking-row" key={x.id}>
-                      <b>{x.consultation_type}</b>
-                      <span>{x.appointment_date}</span>
-                      <span>{x.preferred_time}</span>
+                      <div className="booking-row-main">
+                        <b>{x.consultation_type}</b>
+                        <small>
+                          {x.appointment_date} · {x.preferred_time}
+                        </small>
+                        {x.symptoms && (
+                          <p className="booking-row-symptoms">{x.symptoms}</p>
+                        )}
+                      </div>
                       <span className="status">{x.status}</span>
                     </div>
                   ))

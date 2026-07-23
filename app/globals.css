@@ -67,6 +67,14 @@ body {
 
 /* Final mobile polish for the public footer and gallery lightbox. */
 @media (max-width: 620px) {
+  /* Prevent iOS/Safari from zooming the page when a form control receives focus. */
+  input,
+  select,
+  textarea,
+  button,
+  [contenteditable="true"] {
+    font-size: 16px !important;
+  }
   .footer-identity {
     display: grid;
     grid-template-columns: auto auto;
@@ -2140,6 +2148,9 @@ img {
   flex-direction: column;
   z-index: 80;
 }
+.admin-sidebar-backdrop {
+  display: none;
+}
 .admin-logo {
   height: 76px;
   background: white;
@@ -2358,6 +2369,7 @@ img {
   border-radius: 17px;
   padding: 22px;
   margin-bottom: 24px;
+  scroll-margin-top: 108px;
 }
 .editor-head {
   display: flex;
@@ -2606,7 +2618,7 @@ img {
   gap: 12px;
   margin-top: 20px;
 }
-.media-grid button {
+.media-grid .media-preview {
   height: 130px;
   position: relative;
   border: 1px solid var(--line);
@@ -2689,6 +2701,15 @@ img {
     left: 0;
     box-shadow: 20px 0 60px rgba(0, 0, 0, 0.2);
   }
+  .admin-sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 70;
+    border: 0;
+    background: rgba(4, 24, 30, 0.42);
+    cursor: pointer;
+  }
   .admin-logo button {
     display: block;
   }
@@ -2743,6 +2764,30 @@ img {
   .admin-welcome {
     display: block;
   }
+  .admin-panel-head .panel-actions {
+    width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .admin-panel-head .panel-actions .button {
+    flex: 1 1 0;
+    min-width: 0;
+    margin-top: 0 !important;
+    padding-inline: 10px;
+    justify-content: center;
+    white-space: nowrap;
+  }
+  .admin-panel-head .appointment-panel-actions {
+    flex-wrap: wrap;
+  }
+  .admin-panel-head .appointment-panel-actions .button {
+    flex: 0 1 auto;
+  }
+  .admin-panel-head .appointment-panel-actions .button-danger {
+    flex: 1 1 100%;
+  }
   .admin-panel-head .button,
   .admin-welcome .button {
     margin-top: 16px;
@@ -2754,10 +2799,35 @@ img {
     grid-template-columns: 1fr;
   }
   .content-row {
-    grid-template-columns: auto 1fr auto;
+    grid-template-columns: 1fr auto auto;
+    grid-template-areas:
+      "info info info"
+      "status edit delete";
+    align-items: center;
+    row-gap: 14px;
+  }
+  .content-row.has-thumb {
+    grid-template-columns: 54px 1fr auto auto;
+    grid-template-areas:
+      "thumb info info info"
+      "thumb status edit delete";
+  }
+  .content-row-info {
+    grid-area: info;
+  }
+  .content-row-thumb {
+    grid-area: thumb;
   }
   .content-row .status {
-    grid-column: 2;
+    grid-area: status;
+    justify-self: start;
+  }
+  .content-row > button:not(.danger) {
+    grid-area: edit;
+  }
+  .content-row > button.danger {
+    grid-area: delete;
+    justify-self: end;
   }
   .appointment-admin-row {
     grid-template-columns: 1fr;
@@ -2826,6 +2896,58 @@ img {
   }
 }
 @media (max-width: 620px) {
+  /* Compact admin typography for narrow phones. Keep the hierarchy clear
+     without letting headings and action labels dominate the workspace. */
+  .admin-top h1 {
+    font-size: 22px;
+  }
+  .admin-panel-head h2 {
+    font-size: 21px;
+  }
+  .admin-panel-head p {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+  .editor-card h2,
+  .editor-card h3 {
+    font-size: 20px;
+  }
+  .page-sections {
+    padding: 12px;
+  }
+  .page-sections-head {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .page-sections-head small {
+    max-width: 30ch;
+    line-height: 1.35;
+  }
+  .page-sections-head .button {
+    width: 100%;
+    margin-top: 0 !important;
+  }
+  .page-section-editor {
+    padding: 10px;
+  }
+  .rich-editor {
+    width: 100%;
+  }
+  .rich-toolbar {
+    gap: 4px;
+    padding: 8px;
+  }
+  .rich-toolbar button {
+    padding: 7px 9px;
+    font-size: 12px;
+  }
+  .admin-panel-head .button,
+  .admin-panel-head .panel-actions .button {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
   .appointment-admin-row {
     grid-template-columns: 28px minmax(0, 1fr);
     gap: 10px;
@@ -3282,7 +3404,9 @@ body {
   grid-template-columns: 292px 1fr;
 }
 .admin-sidebar {
-  background: linear-gradient(180deg, #051f28, #06333f 58%, #082a33);
+  /* Use one continuous rail colour so the navigation does not appear to
+     split into separate sections as it reaches Site settings and Media. */
+  background: #082832;
   border-right: 1px solid rgba(105, 221, 195, 0.12);
 }
 .admin-sidebar:before {
@@ -4301,6 +4425,9 @@ body {
   flex: 1;
 }
 .media-delete {
+  height: auto !important;
+  min-height: 0;
+  align-self: center;
   border: 0;
   background: #fff1f0;
   color: #b42318;
@@ -4491,7 +4618,9 @@ body {
     flex: none;
     margin-top: 20px !important;
     padding-bottom: 8px;
-    background: #082832;
+    /* Keep the rail continuous; a solid footer block created a visible
+       horizontal colour break when the sidebar was scrolled on mobile. */
+    background: transparent !important;
     z-index: auto;
   }
   .admin-sidebar-bottom a,
@@ -4502,6 +4631,14 @@ body {
   .admin-sidebar-bottom button:hover {
     background: rgba(105, 221, 195, 0.12);
     color: #fff !important;
+  }
+}
+
+/* The mobile drawer uses the same uninterrupted clinic-green rail as the
+   desktop sidebar. */
+@media (max-width: 900px) {
+  .admin-sidebar-bottom {
+    background: transparent !important;
   }
 }
 
@@ -5918,5 +6055,91 @@ body {
   .gallery-lightbox-close {
     right: 10px;
     top: 10px;
+  }
+}
+
+@media (max-width: 620px) {
+  /* Keep mobile browsers from zooming when inputs receive focus. */
+  input,
+  select,
+  textarea,
+  button,
+  [contenteditable="true"] {
+    font-size: 16px !important;
+  }
+}
+
+.admin-readable-report .report-speaker {
+  margin: 14px 0;
+  padding: 12px 15px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+.admin-readable-report .report-speaker.patient {
+  background: #eaf7f3;
+  border-color: rgba(8, 124, 120, 0.2);
+}
+.admin-readable-report .report-speaker > span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--teal);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.admin-readable-report .report-speaker p {
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .portal-grid {
+    grid-template-columns: 1fr;
+  }
+  .portal-nav {
+    display: block;
+    padding: 16px;
+    border-radius: 18px;
+  }
+  .portal-user {
+    padding-bottom: 13px;
+    margin-bottom: 10px;
+  }
+  .portal-nav a,
+  .portal-nav button {
+    min-height: 44px;
+    font-size: 14px;
+  }
+  .booking-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    align-items: start;
+  }
+  .booking-row-main {
+    min-width: 0;
+  }
+  .booking-row-main b,
+  .booking-row-main small,
+  .booking-row-symptoms {
+    display: block;
+  }
+  .booking-row-main small {
+    margin-top: 5px;
+    color: var(--muted);
+    font-size: 12px;
+  }
+  .booking-row-symptoms {
+    margin: 7px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+  .booking-row .status {
+    white-space: nowrap;
   }
 }

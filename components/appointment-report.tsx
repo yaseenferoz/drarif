@@ -38,6 +38,21 @@ export function AppointmentReport({ text }: { text: string }) {
       return;
     }
     flushBullets();
+    const speaker = line.match(
+      /^(Assistant|Patient|You|Dr\.?\s*Arif(?:’|')s assistant):\s*(.+)$/i,
+    );
+    if (speaker) {
+      blocks.push(
+        <div
+          className={`report-speaker ${/patient|you/i.test(speaker[1]) ? "patient" : "assistant"}`}
+          key={`speaker-${index}`}
+        >
+          <span>{speaker[1]}</span>
+          <p>{inlineReport(speaker[2])}</p>
+        </div>,
+      );
+      return;
+    }
     if (/^FULL CONVERSATION$/i.test(line))
       blocks.push(<h2 key={`heading-${index}`}>Full conversation</h2>);
     else if (/^#{1,3}\s+/.test(line)) {
@@ -48,6 +63,8 @@ export function AppointmentReport({ text }: { text: string }) {
           {inlineReport(line.replace(/^#{1,3}\s+/, ""))}
         </Heading>,
       );
+    } else if (/^\*\*[^*]+\*\*$/.test(line)) {
+      blocks.push(<h2 key={`heading-${index}`}>{inlineReport(line)}</h2>);
     } else if (line.startsWith(">"))
       blocks.push(
         <blockquote key={`quote-${index}`}>

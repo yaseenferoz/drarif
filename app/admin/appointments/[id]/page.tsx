@@ -32,11 +32,16 @@ export default function AppointmentDetail() {
       return;
     }
     client.auth.getUser().then(async ({ data }) => {
-      if (!data.user) {
+      let user = data.user;
+      if (!user) {
+        const sessionResult = await client.auth.getSession();
+        user = sessionResult.data.session?.user ?? null;
+      }
+      if (!user) {
         router.replace("/login");
         return;
       }
-      const role = await resolveUserRole(client, data.user.id);
+      const role = await resolveUserRole(client, user.id);
       if (role.role !== "admin") {
         router.replace("/portal");
         return;

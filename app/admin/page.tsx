@@ -120,15 +120,61 @@ export default function Admin() {
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
   const router = useRouter();
 
+  // Admin sections are one workspace, but each section still gets a browser
+  // history entry. This keeps mobile Back navigation inside the admin portal
+  // before it returns to the page that opened /admin.
+  useEffect(() => {
+    const validTab = (value: string | null): Tab | null =>
+      value && tabs.some((item) => item.key === value) ? (value as Tab) : null;
+    const syncTabFromUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      const requested = validTab(params.get("section"));
+      if (params.has("appointment")) {
+        setTab("appointments");
+      } else if (requested) {
+        setTab(requested);
+      } else {
+        setTab("overview");
+      }
+    };
+    syncTabFromUrl();
+    window.addEventListener("popstate", syncTabFromUrl);
+    return () => window.removeEventListener("popstate", syncTabFromUrl);
+  }, []);
+
+  function navigateTab(next: Tab) {
+    if (next === tab) {
+      setMenuOpen(false);
+      return;
+    }
+    const params = new URLSearchParams(window.location.search);
+    params.set("section", next);
+    params.delete("appointment");
+    window.history.pushState(
+      { adminSection: next },
+      "",
+      `/admin?${params.toString()}`,
+    );
+    setTab(next);
+    setMenuOpen(false);
+  }
+
   async function load() {
     const s = getSupabase();
     if (!s) {
       setLoading(false);
       return;
     }
-    const {
+    let {
       data: { user },
     } = await s.auth.getUser();
+    // On mobile browsers returning via the back button can briefly restore the
+    // page before Supabase has rehydrated its session cookie. Check the local
+    // session once more before sending an already-authenticated admin to login.
+    if (!user) {
+      const sessionResult = await s.auth.getSession();
+      user = sessionResult.data.session?.user ?? null;
+    }
     if (!user) {
       router.replace("/login");
       return;
@@ -257,10 +303,7 @@ export default function Admin() {
             <button
               className={tab === item.key ? "active" : ""}
               key={item.key}
-              onClick={() => {
-                setTab(item.key);
-                setMenuOpen(false);
-              }}
+              onClick={() => navigateTab(item.key)}
             >
               {item.icon}
               <span>{item.label}</span>
@@ -280,6 +323,14 @@ export default function Admin() {
           </button>
         </div>
       </aside>
+      {menuOpen && (
+        <button
+          type="button"
+          className="admin-sidebar-backdrop"
+          aria-label="Close admin menu"
+          onClick={() => setMenuOpen(false)}
+        />
+      )}
       <div className="admin-main">
         <header className="admin-top">
           <button
@@ -436,6 +487,33 @@ function Appointments({
   } | null>(null);
   const [detailId, setDetailId] = useState<string | number | null>(null);
   const pageSize = 10;
+  useEffect(() => {
+    const syncDetailFromUrl = () => {
+      const id = new URLSearchParams(window.location.search).get("appointment");
+      setDetailId(id);
+    };
+    syncDetailFromUrl();
+    window.addEventListener("popstate", syncDetailFromUrl);
+    return () => window.removeEventListener("popstate", syncDetailFromUrl);
+  }, []);
+  function openDetail(id: string | number) {
+    const params = new URLSearchParams(window.location.search);
+    params.set("section", "appointments");
+    params.set("appointment", String(id));
+    window.history.pushState(
+      { appointmentDetail: true },
+      "",
+      `/admin?${params.toString()}`,
+    );
+    setDetailId(id);
+  }
+  function closeDetail() {
+    if (new URLSearchParams(window.location.search).has("appointment")) {
+      window.history.back();
+    } else {
+      setDetailId(null);
+    }
+  }
   const filteredItems = useMemo(() => {
     const query = search.trim().toLowerCase();
     return [...items]
@@ -539,7 +617,7 @@ function Appointments({
         <button
           type="button"
           className="admin-back-link appointment-inline-back"
-          onClick={() => setDetailId(null)}
+          onClick={closeDetail}
         >
           ← Back to appointments
         </button>
@@ -606,7 +684,7 @@ function Appointments({
       title="Appointment requests"
       subtitle="Review requests, update statuses, or remove records no longer needed."
       action={
-        <div className="panel-actions">
+        <div className="panel-actions appointment-panel-actions">
           <button
             type="button"
             className="button button-small button-ghost"
@@ -745,7 +823,7 @@ function Appointments({
                 <button
                   type="button"
                   className="appointment-view-link"
-                  onClick={() => setDetailId(x.id)}
+                  onClick={() => openDetail(x.id)}
                 >
                   View full details
                 </button>
@@ -1158,6 +1236,8 @@ function CollectionManager({
   reload: () => void;
 }) {
   const [editing, setEditing] = useState<RecordRow | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<RecordRow | null>(null);
+  const [confirmRestore, setConfirmRestore] = useState(false);
   const isTreatment = type === "treatments";
   async function save(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -1203,17 +1283,16 @@ function CollectionManager({
     reload();
   }
   async function remove(item: RecordRow) {
-    if (!confirm(`Delete "${item.title}"?`)) return;
-    await getSupabase()!.from(type).delete().eq("id", item.id);
+    if (!item.id) return;
+    const { error } = await getSupabase()!
+      .from(type)
+      .delete()
+      .eq("id", item.id);
+    if (error) return alert(error.message);
+    setConfirmDelete(null);
     reload();
   }
   async function restoreDefaults() {
-    if (
-      !confirm(
-        `Restore the original ${isTreatment ? "treatments" : "articles"}? Custom records in this section will be removed.`,
-      )
-    )
-      return;
     const s = getSupabase()!;
     const { error: deleteError } = await s
       .from(type)
@@ -1263,7 +1342,7 @@ function CollectionManager({
         <div className="panel-actions">
           <button
             className="button button-small button-ghost"
-            onClick={restoreDefaults}
+            onClick={() => setConfirmRestore(true)}
           >
             Restore defaults
           </button>
@@ -1279,6 +1358,7 @@ function CollectionManager({
     >
       {editing && (
         <Editor
+          key={`${type}-${editing.id || editing.slug || "new"}`}
           title={`${editing.id ? "Edit" : "Add"} ${isTreatment ? "treatment" : "article"}`}
           onClose={() => setEditing(null)}
         >
@@ -1383,10 +1463,33 @@ function CollectionManager({
             published={item.published}
             image={item.image_url}
             onEdit={() => setEditing(item)}
-            onDelete={() => remove(item)}
+            onDelete={() => setConfirmDelete(item)}
           />
         ))}
       </div>
+      {confirmDelete && (
+        <ConfirmDialog
+          title={`Delete “${confirmDelete.title}”?`}
+          text={`This ${isTreatment ? "treatment" : "article"} will be permanently removed.`}
+          confirmLabel="Delete"
+          danger
+          onCancel={() => setConfirmDelete(null)}
+          onConfirm={() => remove(confirmDelete)}
+        />
+      )}
+      {confirmRestore && (
+        <ConfirmDialog
+          title={`Restore default ${isTreatment ? "treatments" : "articles"}?`}
+          text="Custom records in this section will be removed and the original clinic content will be restored."
+          confirmLabel="Restore defaults"
+          danger
+          onCancel={() => setConfirmRestore(false)}
+          onConfirm={() => {
+            setConfirmRestore(false);
+            restoreDefaults();
+          }}
+        />
+      )}
     </Panel>
   );
 }
@@ -1578,6 +1681,7 @@ function GalleryManager({
   reload: () => void;
 }) {
   const [editing, setEditing] = useState<GalleryItem | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<GalleryItem | null>(null);
   async function save(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
@@ -1598,10 +1702,14 @@ function GalleryManager({
     reload();
   }
   async function remove(item: GalleryItem) {
-    if (item.id && confirm(`Delete "${item.title}"?`)) {
-      await getSupabase()!.from("gallery_items").delete().eq("id", item.id);
-      reload();
-    }
+    if (!item.id) return;
+    const { error } = await getSupabase()!
+      .from("gallery_items")
+      .delete()
+      .eq("id", item.id);
+    if (error) return alert(error.message);
+    setConfirmDelete(null);
+    reload();
   }
   return (
     <Panel
@@ -1627,7 +1735,11 @@ function GalleryManager({
       }
     >
       {editing && (
-        <Editor title="Edit gallery item" onClose={() => setEditing(null)}>
+        <Editor
+          key={`gallery-${editing.id || editing.image_url || "new"}`}
+          title="Edit gallery item"
+          onClose={() => setEditing(null)}
+        >
           <form className="admin-form admin-form-grid" onSubmit={save}>
             <Field label="Title">
               <input name="title" defaultValue={editing.title} required />
@@ -1685,7 +1797,10 @@ function GalleryManager({
                 Edit
               </button>
               {item.id && (
-                <button className="danger" onClick={() => remove(item)}>
+                <button
+                  className="danger"
+                  onClick={() => setConfirmDelete(item)}
+                >
                   <Trash2 />
                   Delete
                 </button>
@@ -1694,6 +1809,16 @@ function GalleryManager({
           </article>
         ))}
       </div>
+      {confirmDelete && (
+        <ConfirmDialog
+          title={`Delete “${confirmDelete.title}”?`}
+          text="This gallery image and its caption will be permanently removed."
+          confirmLabel="Delete image"
+          danger
+          onCancel={() => setConfirmDelete(null)}
+          onConfirm={() => remove(confirmDelete)}
+        />
+      )}
     </Panel>
   );
 }
@@ -1949,8 +2074,16 @@ function Editor({
   onClose: () => void;
   children: ReactNode;
 }) {
+  const editorRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const frame = window.requestAnimationFrame(() => {
+      editorRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
   return (
-    <div className="editor-card">
+    <div ref={editorRef} className="editor-card">
       <div className="editor-head">
         <h3>{title}</h3>
         <button onClick={onClose} aria-label="Close editor">
@@ -2320,13 +2453,13 @@ function ContentRow({
   onDelete?: () => void;
 }) {
   return (
-    <article className="content-row">
+    <article className={`content-row ${image ? "has-thumb" : ""}`}>
       {image && (
-        <div className="content-thumb">
+        <div className="content-thumb content-row-thumb">
           <Image src={image} fill alt="" />
         </div>
       )}
-      <div>
+      <div className="content-row-info">
         <h3>{title}</h3>
         <p>{meta}</p>
       </div>
