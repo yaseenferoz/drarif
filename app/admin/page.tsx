@@ -379,7 +379,7 @@ export default function Admin() {
             <CollectionManager type="articles" items={articles} reload={load} />
           )}
           {tab === "navigation" && (
-            <NavigationManager items={navigation} reload={load} />
+            <NavigationManager items={navigation} pages={pages} reload={load} />
           )}
           {tab === "gallery" && (
             <GalleryManager items={gallery} reload={load} />
@@ -1496,9 +1496,11 @@ function CollectionManager({
 
 function NavigationManager({
   items,
+  pages,
   reload,
 }: {
   items: NavigationItem[];
+  pages: SitePage[];
   reload: () => void;
 }) {
   const [editing, setEditing] = useState<NavigationItem | null>(null);
@@ -1510,9 +1512,11 @@ function NavigationManager({
   async function save(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
+    const mappedHref = String(fd.get("page_href") || "");
+    const customHref = String(fd.get("custom_href") || "").trim();
     const payload = {
       label: String(fd.get("label")),
-      href: String(fd.get("href")),
+      href: customHref || mappedHref || "/",
       location: String(fd.get("location")),
       sort_order: Number(fd.get("sort_order")),
       visible: fd.get("visible") === "on",
@@ -1596,15 +1600,52 @@ function NavigationManager({
       {editing && (
         <Editor
           key={editing.id || `${editing.label}-${editing.href}`}
-          title="Edit navigation item"
+          title={`${editing.id ? "Edit" : "Add"} navigation item`}
           onClose={() => setEditing(null)}
         >
           <form className="admin-form admin-form-grid" onSubmit={save}>
             <Field label="Label">
               <input name="label" defaultValue={editing.label} required />
             </Field>
-            <Field label="Destination">
-              <input name="href" defaultValue={editing.href} required />
+            <Field label="CMS page">
+              <select
+                name="page_href"
+                defaultValue={
+                  pages.some(
+                    (page) =>
+                      (page.page_key === "home" ? "/" : `/${page.page_key}`) ===
+                      editing.href,
+                  )
+                    ? editing.href
+                    : ""
+                }
+              >
+                <option value="">Choose a page</option>
+                {pages.map((page) => (
+                  <option
+                    key={page.page_key}
+                    value={page.page_key === "home" ? "/" : `/${page.page_key}`}
+                  >
+                    {page.title} (/
+                    {page.page_key === "home" ? "" : page.page_key})
+                  </option>
+                ))}
+              </select>
+            </Field>
+            <Field label="Custom URL (optional)" full>
+              <input
+                name="custom_href"
+                defaultValue={
+                  pages.some(
+                    (page) =>
+                      (page.page_key === "home" ? "/" : `/${page.page_key}`) ===
+                      editing.href,
+                  )
+                    ? ""
+                    : editing.href
+                }
+                placeholder="https://… or /custom-path"
+              />
             </Field>
             <Field label="Location">
               <select name="location" defaultValue={editing.location}>
