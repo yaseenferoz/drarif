@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 250" role="img" aria-label="Prescription Rx">
+  <rect width="220" height="250" fill="#fff"/>
+  <path d="M52 38h72c28 0 48 18 48 44 0 23-14 39-36 45l43 72h-29l-39-66H82v66H52V38Zm30 25v45h39c15 0 25-9 25-23s-10-22-25-22H82Z" fill="#050505"/>
+  <path d="m153 62 18 18-72 112-18-18 72-112Z" fill="#050505"/>
+  <path d="m145 128 35 54h-28l-22-36 15-18Z" fill="#050505"/>
+</svg>

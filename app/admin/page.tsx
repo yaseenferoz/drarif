@@ -92,6 +92,17 @@ function appointmentPreview(item: RecordRow) {
   return readable || String(item.symptoms || "No concern details provided.");
 }
 
+function printableReportSummary(value: unknown) {
+  return String(value || "")
+    .split(/FULL CONVERSATION/i)[0]
+    .replace(/\r/g, "")
+    .replace(/^#{1,6}\s*/gm, "")
+    .replace(/\*\*/g, "")
+    .replace(/^\s*[-*_]{3,}\s*$/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 const tabs: { key: Tab; label: string; icon: ReactNode }[] = [
   { key: "overview", label: "Overview", icon: <LayoutDashboard /> },
   { key: "appointments", label: "Appointments", icon: <CalendarDays /> },
@@ -365,7 +376,11 @@ export default function Admin() {
             />
           )}
           {tab === "appointments" && (
-            <Appointments items={appointments} reload={load} />
+            <Appointments
+              items={appointments}
+              settings={settings}
+              reload={load}
+            />
           )}
           {tab === "pages" && <PagesManager items={pages} reload={load} />}
           {tab === "treatments" && (
@@ -469,9 +484,11 @@ function Overview({
 
 function Appointments({
   items,
+  settings,
   reload,
 }: {
   items: RecordRow[];
+  settings: SiteSettings;
   reload: () => void;
 }) {
   const [selected, setSelected] = useState<string[]>([]);
@@ -621,61 +638,181 @@ function Appointments({
         >
           ← Back to appointments
         </button>
-        <div className="admin-detail-head appointment-inline-head">
-          <div>
-            <span className="eyebrow">APPOINTMENT RECORD</span>
-            <h1>{detailItem.full_name}</h1>
-            <p>
-              {detailItem.consultation_type || "Consultation"} ·{" "}
-              {detailItem.appointment_date} · {detailItem.preferred_time}
-            </p>
+        <div className="admin-detail-print-sheet">
+          <div className="print-watermark" aria-hidden="true">
+            <Image
+              src={practiceLogo(settings.logo_url)}
+              width={420}
+              height={420}
+              alt=""
+            />
           </div>
-          <span
-            className={`status ${String(detailItem.status || "new").toLowerCase()}`}
-          >
-            {detailItem.status || "new"}
-          </span>
-        </div>
-        <div className="admin-detail-grid">
-          <section className="admin-detail-card">
-            <h2>Patient details</h2>
-            <div className="admin-detail-fields">
-              <div>
-                <small>Full name</small>
-                <b>{detailItem.full_name || "Not provided"}</b>
+          <div className="print-letterhead">
+            <Image
+              src={practiceLogo(settings.logo_url)}
+              width={190}
+              height={78}
+              alt={settings.doctor_name}
+              className="print-letterhead-logo"
+            />
+            <div className="print-letterhead-copy">
+              <h1>{settings.doctor_name}</h1>
+              <p>{settings.credentials}</p>
+              <p>
+                {settings.hospital} · {settings.location}
+              </p>
+              <p>
+                {settings.phone} · {settings.email}
+              </p>
+              <p>{settings.hours}</p>
+            </div>
+          </div>
+          <div className="admin-detail-head appointment-inline-head">
+            <div>
+              <span className="eyebrow">APPOINTMENT RECORD</span>
+              <h1>{detailItem.full_name}</h1>
+              <p>
+                {detailItem.consultation_type || "Consultation"} ·{" "}
+                {detailItem.appointment_date} · {detailItem.preferred_time}
+              </p>
+            </div>
+            <span
+              className={`status ${String(detailItem.status || "new").toLowerCase()}`}
+            >
+              {detailItem.status || "new"}
+            </span>
+          </div>
+          <div className="admin-detail-grid">
+            <section className="admin-detail-card">
+              <h2>Patient details</h2>
+              <div className="admin-detail-fields">
+                <div>
+                  <small>Full name</small>
+                  <b>{detailItem.full_name || "Not provided"}</b>
+                </div>
+                <div>
+                  <small>Mobile number</small>
+                  <b>{detailItem.mobile_number || "Not provided"}</b>
+                </div>
+                <div>
+                  <small>Email</small>
+                  <b>{detailItem.email || "Not provided"}</b>
+                </div>
+                <div>
+                  <small>Consultation</small>
+                  <b>{detailItem.consultation_type || "Not provided"}</b>
+                </div>
+                <div>
+                  <small>Appointment date</small>
+                  <b>{detailItem.appointment_date || "Not provided"}</b>
+                </div>
+                <div>
+                  <small>Preferred time</small>
+                  <b>{detailItem.preferred_time || "Not provided"}</b>
+                </div>
+                <div>
+                  <small>Status</small>
+                  <b>{detailItem.status || "new"}</b>
+                </div>
               </div>
-              <div>
-                <small>Mobile number</small>
-                <b>{detailItem.mobile_number || "Not provided"}</b>
+            </section>
+            <section className="admin-detail-card">
+              <h2>Symptoms and request</h2>
+              <p className="admin-detail-copy">
+                {detailItem.symptoms ||
+                  "No symptoms or report details were provided."}
+              </p>
+            </section>
+          </div>
+          <section className="admin-detail-card admin-report-card">
+            <div className="admin-report-head">
+              <h2>Full pre-consultation report</h2>
+              <button
+                type="button"
+                className="button button-small button-ghost report-print-button"
+                onClick={() => window.print()}
+              >
+                Print report
+              </button>
+            </div>
+            <div
+              className="print-summary"
+              aria-label="Printable appointment summary"
+            >
+              <div className="print-summary-title">
+                <h2>Patient details</h2>
               </div>
-              <div>
-                <small>Email</small>
-                <b>{detailItem.email || "Not provided"}</b>
-              </div>
-              <div>
-                <small>Consultation</small>
-                <b>{detailItem.consultation_type || "Not provided"}</b>
+              <div className="print-summary-grid">
+                <div>
+                  <small>Patient</small>
+                  <strong>{detailItem.full_name || "Not provided"}</strong>
+                </div>
+                <div>
+                  <small>Contact</small>
+                  <strong>{detailItem.mobile_number || "Not provided"}</strong>
+                </div>
+                <div>
+                  <small>Appointment</small>
+                  <strong>
+                    {detailItem.appointment_date || "Not provided"} ·{" "}
+                    {detailItem.preferred_time || "Time not provided"}
+                  </strong>
+                </div>
+                <div>
+                  <small>Visit type</small>
+                  <strong>
+                    {detailItem.consultation_type || "Consultation"}
+                  </strong>
+                </div>
               </div>
             </div>
-          </section>
-          <section className="admin-detail-card">
-            <h2>Symptoms and request</h2>
-            <p className="admin-detail-copy">
-              {detailItem.symptoms ||
-                "No symptoms or report details were provided."}
-            </p>
+            <div
+              className="print-prescription-line"
+              aria-label="Prescription writing area"
+            >
+              <img src="/assets/img/rx-signage.jpg" alt="Rx" />
+            </div>
+            {detailItem.pre_diagnosis_report && (
+              <section className="print-detailed-summary">
+                <div className="print-summary-page-head">
+                  <Image
+                    src={practiceLogo(settings.logo_url)}
+                    width={130}
+                    height={48}
+                    alt={settings.doctor_name}
+                  />
+                  <div>
+                    <strong>{settings.doctor_name}</strong>
+                    <small>{settings.credentials}</small>
+                    <small>
+                      {settings.hospital} · {settings.location} ·{" "}
+                      {settings.phone}
+                    </small>
+                  </div>
+                </div>
+                <h2>Pre-consultation summary</h2>
+                <p className="print-summary-note">
+                  For clinician review only. This is not a diagnosis or
+                  treatment plan.
+                </p>
+                <div className="print-detailed-summary-text">
+                  {printableReportSummary(detailItem.pre_diagnosis_report)}
+                </div>
+              </section>
+            )}
+            {detailItem.pre_diagnosis_report ? (
+              <div className="screen-full-report">
+                <AppointmentReport
+                  text={String(detailItem.pre_diagnosis_report)}
+                />
+              </div>
+            ) : (
+              <p className="admin-detail-copy screen-full-report">
+                No pre-consultation report was attached.
+              </p>
+            )}
           </section>
         </div>
-        <section className="admin-detail-card admin-report-card">
-          <h2>Full pre-consultation report</h2>
-          {detailItem.pre_diagnosis_report ? (
-            <AppointmentReport text={String(detailItem.pre_diagnosis_report)} />
-          ) : (
-            <p className="admin-detail-copy">
-              No pre-consultation report was attached.
-            </p>
-          )}
-        </section>
       </Panel>
     );
   }

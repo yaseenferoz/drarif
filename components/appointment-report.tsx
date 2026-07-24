@@ -16,6 +16,7 @@ export function AppointmentReport({ text }: { text: string }) {
   const lines = text.split(/\r?\n/);
   const blocks: ReactNode[] = [];
   let bullets: string[] = [];
+  let skipNext = false;
   const flushBullets = () => {
     if (!bullets.length) return;
     blocks.push(
@@ -28,6 +29,10 @@ export function AppointmentReport({ text }: { text: string }) {
     bullets = [];
   };
   lines.forEach((raw, index) => {
+    if (skipNext) {
+      skipNext = false;
+      return;
+    }
     const line = raw.trim();
     if (!line || /^[-_]{3,}$/.test(line)) {
       flushBullets();
@@ -53,7 +58,18 @@ export function AppointmentReport({ text }: { text: string }) {
       );
       return;
     }
-    if (/^FULL CONVERSATION$/i.test(line))
+    if (/^(?:#{1,6}\s*)?\*{0,2}Next Steps:?\*{0,2}$/i.test(line)) {
+      const nextLine = lines[index + 1]?.trim() || "";
+      blocks.push(
+        <div className="report-next-steps" key={`next-steps-${index}`}>
+          <h3>Next steps</h3>
+          {nextLine.startsWith(">") && (
+            <p>{inlineReport(nextLine.replace(/^>\s?/, ""))}</p>
+          )}
+        </div>,
+      );
+      if (nextLine.startsWith(">")) skipNext = true;
+    } else if (/^FULL CONVERSATION$/i.test(line))
       blocks.push(<h2 key={`heading-${index}`}>Full conversation</h2>);
     else if (/^#{1,3}\s+/.test(line)) {
       const level = Math.min(3, (line.match(/^#+/) || ["#"])[0].length);
