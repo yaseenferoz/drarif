@@ -114,14 +114,6 @@ export function Footer() {
           <Link href="/privacy">Privacy</Link>
           <Link href="/terms">Terms</Link>
           <Link href="/admin">Admin</Link>
-          <a
-            className="footer-credit"
-            href="https://codekraft.co.in/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            Designed &amp; developed by CodeKraft
-          </a>
         </div>
       </div>
     </footer>

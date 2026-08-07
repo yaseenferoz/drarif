@@ -584,7 +584,23 @@ function Appointments({
     setToast({ type, text });
     window.setTimeout(() => setToast(null), 4200);
   }
+  function notifyWhatsApp(appointment: RecordRow, status?: string) {
+    void fetch("/api/whatsapp/notify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event: "status_changed",
+        to: appointment.mobile_number,
+        appointment: {
+          ...appointment,
+          status: status || appointment.status || "new",
+        },
+      }),
+      keepalive: true,
+    }).catch(() => undefined);
+  }
   async function change(id: string, status: string) {
+    const appointment = items.find((item) => String(item.id) === String(id));
     const { error } = await getSupabase()!
       .from("appointments")
       .update({ status, updated_at: new Date().toISOString() })
@@ -593,6 +609,7 @@ function Appointments({
       notify("error", `Could not update appointment: ${error.message}`);
       return;
     }
+    if (appointment) notifyWhatsApp(appointment, status);
     notify("success", `Appointment marked ${status}.`);
     reload();
   }

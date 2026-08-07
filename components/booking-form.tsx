@@ -6,6 +6,18 @@ import { CalendarDays, Check, LockKeyhole } from "./icons";
 import { getSupabase, isSupabaseConfigured } from "@/lib/supabase";
 import { PreConsultationAssistant } from "@/components/pre-consultation-assistant";
 
+function notifyWhatsApp(
+  event: "booking_created",
+  appointment: Record<string, unknown>,
+) {
+  void fetch("/api/whatsapp/notify", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ event, to: appointment.mobile_number, appointment }),
+    keepalive: true,
+  }).catch(() => undefined);
+}
+
 export function BookingForm({
   compact = false,
   showPrecheck = false,
@@ -94,6 +106,7 @@ export function BookingForm({
         ]),
       );
     }
+    notifyWhatsApp("booking_created", booking);
     localStorage.removeItem("preconsultation-report");
     preDiagnosisRef.current = "";
     setPreDiagnosisReport("");

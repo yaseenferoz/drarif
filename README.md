@@ -27,3 +27,15 @@ Without environment variables, the public site runs with built-in content and ap
 - `site-media` storage bucket: public content images with admin-only writes
 
 Legacy `.html` URLs redirect to the equivalent new routes.
+# WhatsApp appointment notifications
+
+Appointment creation and admin status changes call the server-only
+`/api/whatsapp/notify` route. Configure the WhatsApp Cloud API values in
+`.env.local` (never `NEXT_PUBLIC_*`). Meta requires an approved template for
+messages outside its 24-hour customer-service window. Set separate approved
+template names with `WHATSAPP_BOOKING_TEMPLATE_NAME` and
+`WHATSAPP_STATUS_TEMPLATE_NAME`; set `WHATSAPP_TEMPLATE_PARAM_COUNT` to the
+number of body placeholders in those templates. For a short-lived test after
+the recipient has messaged the test number, `WHATSAPP_MESSAGE_MODE=text` can
+be used. WhatsApp failures are intentionally non-blocking: the appointment is
+still saved and the error is returned only by the notification endpoint.
