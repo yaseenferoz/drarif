@@ -1,16 +1,17 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap");
 
 :root {
-  --ink: #0b2630;
-  --muted: #607078;
-  --teal: #087c78;
-  --mint: #52d1b2;
-  --pale: #eff9f6;
-  --cream: #f8f7f1;
-  --line: #dbe6e3;
+  --ink: #002247;
+  --muted: #607080;
+  --teal: #1a3a6b;
+  --mint: #c9a227;
+  --pale: #eef4fb;
+  --cream: #f7f8fa;
+  --line: #dbe3ec;
   --white: #fff;
-  --shadow: 0 24px 70px rgba(16, 57, 64, 0.12);
+  --shadow: 0 24px 70px rgba(0, 34, 71, 0.12);
 }
+
 * {
   box-sizing: border-box;
 }
@@ -34,7 +35,7 @@ body {
   place-items: center;
   border: 1px solid rgba(255, 255, 255, 0.55);
   border-radius: 50%;
-  background: linear-gradient(145deg, #087c78, #07515a);
+  background: linear-gradient(145deg, #1a3a6b, #002247);
   color: #fff;
   box-shadow:
     0 12px 28px rgba(5, 57, 65, 0.24),
@@ -180,12 +181,12 @@ img {
 }
 .header {
   height: 82px;
-  background: rgba(255, 255, 255, 0.94);
+  background: rgba(0, 34, 71, 0.97);
   backdrop-filter: blur(18px);
   position: sticky;
   top: 0;
   z-index: 50;
-  border-bottom: 1px solid rgba(11, 38, 48, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
 }
 .header-inner {
   height: 100%;
@@ -232,12 +233,12 @@ img {
 .nav a {
   font-size: 14px;
   font-weight: 600;
-  color: #53646a;
+  color: rgba(255, 255, 255, 0.82);
   position: relative;
 }
 .nav a:hover,
 .nav a.active {
-  color: var(--teal);
+  color: #fff;
 }
 .nav a.active:after {
   content: "";
@@ -325,8 +326,8 @@ img {
   position: absolute;
   inset: 0;
   background-image:
-    linear-gradient(rgba(8, 124, 120, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(8, 124, 120, 0.035) 1px, transparent 1px);
+    linear-gradient(rgba(26, 58, 107, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 58, 107, 0.035) 1px, transparent 1px);
   background-size: 45px 45px;
 }
 .hero-orb {
@@ -344,7 +345,7 @@ img {
 .orb-two {
   width: 260px;
   height: 260px;
-  border: 1px solid rgba(8, 124, 120, 0.13);
+  border: 1px solid rgba(26, 58, 107, 0.13);
   left: -140px;
   bottom: 40px;
 }
@@ -854,7 +855,7 @@ img {
 .form-grid select:focus,
 .form-grid textarea:focus {
   border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(8, 124, 120, 0.08);
+  box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.08);
 }
 .form-grid .full {
   grid-column: 1/-1;
@@ -1444,7 +1445,7 @@ img {
   animation: admin-toast-in 0.2s ease-out;
 }
 .admin-toast-success {
-  background: #087c78;
+  background: #1a3a6b;
 }
 .admin-toast-error {
   background: #b43b3b;
@@ -1555,7 +1556,7 @@ img {
 .admin-detail-fields div {
   padding: 13px 14px;
   background: #f4faf8;
-  border: 1px solid rgba(8, 124, 120, 0.12);
+  border: 1px solid rgba(26, 58, 107, 0.12);
   border-radius: 12px;
 }
 .admin-detail-fields small {
@@ -1972,7 +1973,7 @@ img {
 }
 .mobile-nav a.mobile-active {
   color: var(--teal);
-  background: linear-gradient(90deg, rgba(8, 124, 120, 0.12), transparent);
+  background: linear-gradient(90deg, rgba(26, 58, 107, 0.12), transparent);
   border-left: 3px solid #e2b84d;
   padding-left: 13px;
   border-radius: 0 10px 10px 0;
@@ -1986,7 +1987,7 @@ img {
   place-items: center;
   width: 42px;
   height: 42px;
-  border: 1px solid rgba(8, 124, 120, 0.2);
+  border: 1px solid rgba(26, 58, 107, 0.2);
   border-radius: 14px;
   background: linear-gradient(145deg, #f1faf7, #dcefeb);
   color: var(--teal);
@@ -2010,7 +2011,7 @@ img {
 }
 .mobile-nav-parent button[aria-expanded="true"] {
   transform: rotate(180deg);
-  background: linear-gradient(145deg, #087c78, #07515a);
+  background: linear-gradient(145deg, #1a3a6b, #002247);
   color: #fff;
   box-shadow: 0 10px 22px rgba(5, 57, 65, 0.22);
 }
@@ -2545,7 +2546,7 @@ img {
     min-height: 150px;
     padding: 12px 4px;
     text-align: left;
-    color: #087c78;
+    color: #1a3a6b;
     font:
       700 24px/1 Georgia,
       serif;
@@ -2627,9 +2628,9 @@ img {
     justify-content: center;
     width: 30px;
     height: 30px;
-    border: 1px solid #087c78;
+    border: 1px solid #1a3a6b;
     border-radius: 50%;
-    color: #087c78;
+    color: #1a3a6b;
     font:
       700 20px/1 Georgia,
       serif;
@@ -2639,7 +2640,7 @@ img {
     font:
       700 11px/1.25 "Manrope",
       sans-serif;
-    color: #087c78;
+    color: #1a3a6b;
     text-transform: uppercase;
     letter-spacing: 0.08em;
   }
@@ -2679,7 +2680,7 @@ img {
     padding: 0 !important;
   }
   .admin-detail-print-sheet .status {
-    color: #087c78 !important;
+    color: #1a3a6b !important;
     background: #e7f7f0 !important;
   }
   .report-print-button {
@@ -2734,7 +2735,7 @@ img {
 .admin-form textarea:focus,
 .admin-form select:focus {
   border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(8, 124, 120, 0.08);
+  box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.08);
 }
 .code-input {
   font-family: Consolas, monospace;
@@ -2889,7 +2890,7 @@ img {
   display: flex;
   align-items: center;
   gap: 12px;
-  border: 1px solid rgba(8, 124, 120, 0.2);
+  border: 1px solid rgba(26, 58, 107, 0.2);
   background: rgba(255, 255, 255, 0.82);
   border-radius: 14px;
   padding: 14px 16px;
@@ -3294,7 +3295,7 @@ img {
   inset: 0 0 auto;
   height: 3px;
   z-index: 9999;
-  background: linear-gradient(90deg, var(--teal), #45d6b5, #f5c451);
+  background: linear-gradient(90deg, var(--teal), #c9a227, #f5c451);
   transform-origin: left;
   animation: routeLoad 1s ease-in-out infinite;
 }
@@ -3452,7 +3453,7 @@ body {
   background: linear-gradient(145deg, #06323d, #0a827c);
   box-shadow:
     inset 0 0 0 1px rgba(255, 255, 255, 0.16),
-    0 16px 34px rgba(8, 124, 120, 0.28);
+    0 16px 34px rgba(26, 58, 107, 0.28);
 }
 .gut-loader-mark:before {
   content: "";
@@ -3549,7 +3550,7 @@ body {
   height: 88px;
   background: rgba(255, 255, 255, 0.82);
   box-shadow: 0 16px 48px rgba(7, 39, 49, 0.08);
-  border-bottom: 1px solid rgba(8, 124, 120, 0.12);
+  border-bottom: 1px solid rgba(26, 58, 107, 0.12);
 }
 .header:before {
   content: "";
@@ -3570,7 +3571,7 @@ body {
   border-radius: 18px;
   padding: 8px 14px;
   background: linear-gradient(135deg, #edf8f5, #fff8e8);
-  box-shadow: inset 0 0 0 1px rgba(8, 124, 120, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(26, 58, 107, 0.08);
 }
 .brand-logo {
   width: 220px;
@@ -3584,7 +3585,7 @@ body {
   gap: 8px;
   padding: 7px;
   background: rgba(239, 249, 246, 0.72);
-  border: 1px solid rgba(8, 124, 120, 0.1);
+  border: 1px solid rgba(26, 58, 107, 0.1);
   border-radius: 999px;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85);
 }
@@ -3603,12 +3604,12 @@ body {
   background: white;
   color: var(--surgical);
   transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(8, 124, 120, 0.1);
+  box-shadow: 0 10px 24px rgba(26, 58, 107, 0.1);
 }
 .nav a.active {
   background: linear-gradient(135deg, #0b8f88, #096b66);
   color: white;
-  box-shadow: 0 12px 28px rgba(8, 124, 120, 0.22);
+  box-shadow: 0 12px 28px rgba(26, 58, 107, 0.22);
 }
 .nav a.active:after {
   left: 50%;
@@ -3631,7 +3632,7 @@ body {
 .icon-link:hover,
 .menu-toggle:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 26px rgba(8, 124, 120, 0.12);
+  box-shadow: 0 12px 26px rgba(26, 58, 107, 0.12);
   background: #fff;
 }
 .hero {
@@ -3650,8 +3651,8 @@ body {
 }
 .hero:before {
   background-image:
-    linear-gradient(rgba(8, 124, 120, 0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(8, 124, 120, 0.035) 1px, transparent 1px),
+    linear-gradient(rgba(26, 58, 107, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(26, 58, 107, 0.035) 1px, transparent 1px),
     radial-gradient(
       circle at 20px 20px,
       rgba(212, 168, 63, 0.09) 1px,
@@ -3692,7 +3693,7 @@ body {
 }
 .treatment-card,
 .article-card {
-  border-color: rgba(8, 124, 120, 0.11);
+  border-color: rgba(26, 58, 107, 0.11);
 }
 .treatment-card:hover,
 .article-card:hover {
@@ -3700,10 +3701,10 @@ body {
   box-shadow: 0 28px 70px rgba(7, 39, 49, 0.16);
 }
 .button {
-  box-shadow: 0 12px 28px rgba(8, 124, 120, 0.18);
+  box-shadow: 0 12px 28px rgba(26, 58, 107, 0.18);
 }
 .button:hover {
-  box-shadow: 0 18px 34px rgba(8, 124, 120, 0.24);
+  box-shadow: 0 18px 34px rgba(26, 58, 107, 0.24);
 }
 .admin-page-root {
   background:
@@ -3808,7 +3809,7 @@ body {
   height: 88px;
   background: rgba(255, 255, 255, 0.74);
   backdrop-filter: blur(18px);
-  border-bottom: 1px solid rgba(8, 124, 120, 0.1);
+  border-bottom: 1px solid rgba(26, 58, 107, 0.1);
 }
 .admin-top h1 {
   font-size: 25px;
@@ -3829,7 +3830,7 @@ body {
 .editor-card,
 .content-row,
 .gallery-admin-grid article {
-  border-color: rgba(8, 124, 120, 0.11);
+  border-color: rgba(26, 58, 107, 0.11);
   box-shadow: 0 18px 50px rgba(7, 39, 49, 0.07);
 }
 .admin-stat-grid article > span {
@@ -4013,7 +4014,7 @@ body {
   position: relative;
   width: 76px;
   height: 76px;
-  filter: drop-shadow(0 9px 16px rgba(8, 124, 120, 0.12));
+  filter: drop-shadow(0 9px 16px rgba(26, 58, 107, 0.12));
   animation: organFloat 1.8s ease-in-out infinite;
 }
 .digestive-orbit {
@@ -4105,7 +4106,7 @@ body {
   content: "";
   position: absolute;
   border-radius: 50%;
-  border: 1px solid rgba(8, 124, 120, 0.18);
+  border: 1px solid rgba(26, 58, 107, 0.18);
 }
 .loader-logo-stage:before {
   width: 126px;
@@ -4206,7 +4207,7 @@ body {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(135deg, #087c78, #70c8b1 62%, #d4b767);
+  background: linear-gradient(135deg, #1a3a6b, #526d92 62%, #d4b767);
   mix-blend-mode: color;
   opacity: 0.82;
   pointer-events: none;
@@ -4272,7 +4273,7 @@ body {
   left: 50%;
   width: 260px;
   padding: 9px;
-  border: 1px solid rgba(8, 124, 120, 0.13);
+  border: 1px solid rgba(26, 58, 107, 0.13);
   border-radius: 16px;
   background: rgba(255, 255, 255, 0.97);
   box-shadow: 0 20px 52px rgba(7, 39, 49, 0.16);
@@ -4317,7 +4318,7 @@ body {
 .mobile-subnav-link {
   margin-left: 13px;
   padding-left: 15px !important;
-  border-left: 2px solid rgba(8, 124, 120, 0.18);
+  border-left: 2px solid rgba(26, 58, 107, 0.18);
   color: #5b7478 !important;
   font-size: 12px;
 }
@@ -4438,7 +4439,7 @@ body {
     overflow-wrap: anywhere;
     padding: 10px 0 !important;
     border-radius: 0 !important;
-    border-bottom: 1px solid rgba(8, 124, 120, 0.16);
+    border-bottom: 1px solid rgba(26, 58, 107, 0.16);
     line-height: 1.35;
   }
   .nav-dropdown a:hover {
@@ -4526,8 +4527,8 @@ body {
   border-radius: 999px;
   padding-inline: 16px;
   box-shadow:
-    inset 0 0 0 1px rgba(8, 124, 120, 0.08),
-    0 8px 22px rgba(8, 124, 120, 0.08);
+    inset 0 0 0 1px rgba(26, 58, 107, 0.08),
+    0 8px 22px rgba(26, 58, 107, 0.08);
 }
 .header .nav > a.active:after {
   left: 50% !important;
@@ -4540,7 +4541,7 @@ body {
   background: linear-gradient(90deg, var(--teal), var(--bile)) !important;
   box-shadow:
     0 0 0 3px rgba(105, 221, 195, 0.16),
-    0 4px 12px rgba(8, 124, 120, 0.3) !important;
+    0 4px 12px rgba(26, 58, 107, 0.3) !important;
 }
 .footer-credit {
   color: #a7d9d0 !important;
@@ -4669,7 +4670,7 @@ body {
 }
 .media-toolbar input:focus {
   border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(8, 124, 120, 0.08);
+  box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.08);
 }
 .media-card {
   min-width: 0;
@@ -4917,7 +4918,7 @@ body {
 }
 .rich-media-picker button:hover {
   border-color: var(--teal);
-  box-shadow: 0 0 0 2px rgba(8, 124, 120, 0.15);
+  box-shadow: 0 0 0 2px rgba(26, 58, 107, 0.15);
 }
 
 /* Keep the admin footer actions inside the dark rail on desktop too. */
@@ -4964,13 +4965,13 @@ body {
     overflow-y: scroll;
     overscroll-behavior: contain;
     scrollbar-width: thin;
-    scrollbar-color: var(--teal) rgba(8, 124, 120, 0.1);
+    scrollbar-color: var(--teal) rgba(26, 58, 107, 0.1);
   }
   .mobile-nav::-webkit-scrollbar {
     width: 7px;
   }
   .mobile-nav::-webkit-scrollbar-track {
-    background: rgba(8, 124, 120, 0.08);
+    background: rgba(26, 58, 107, 0.08);
     border-radius: 99px;
   }
   .mobile-nav::-webkit-scrollbar-thumb {
@@ -5032,7 +5033,7 @@ body {
   min-height: 360px;
   display: grid;
   place-items: center;
-  border: 1px dashed rgba(8, 124, 120, 0.25);
+  border: 1px dashed rgba(26, 58, 107, 0.25);
   border-radius: 15px;
   color: var(--muted);
   background: rgba(238, 248, 245, 0.45);
@@ -5229,7 +5230,7 @@ body {
   box-shadow: none !important;
 }
 .ckeditor-shell .ck-editor__editable.ck-focused {
-  box-shadow: inset 0 0 0 2px rgba(8, 124, 120, 0.12) !important;
+  box-shadow: inset 0 0 0 2px rgba(26, 58, 107, 0.12) !important;
 }
 .ckeditor-shell .ck-content h2 {
   font-size: 30px;
@@ -5297,7 +5298,7 @@ body {
 }
 .ckeditor-media-picker button:hover {
   border-color: var(--teal);
-  box-shadow: 0 0 0 2px rgba(8, 124, 120, 0.12);
+  box-shadow: 0 0 0 2px rgba(26, 58, 107, 0.12);
 }
 .ckeditor-media-picker img {
   display: block;
@@ -5355,7 +5356,7 @@ body {
   position: relative;
   width: min(440px, 100%);
   background: #fff;
-  border: 1px solid rgba(8, 124, 120, 0.15);
+  border: 1px solid rgba(26, 58, 107, 0.15);
   border-radius: 22px;
   padding: 30px;
   box-shadow: 0 28px 90px rgba(4, 26, 33, 0.28);
@@ -5423,7 +5424,7 @@ body {
 }
 .page-sections {
   grid-column: 1/-1;
-  border: 1px solid rgba(8, 124, 120, 0.16);
+  border: 1px solid rgba(26, 58, 107, 0.16);
   border-radius: 14px;
   padding: 16px;
   background: rgba(238, 248, 245, 0.55);
@@ -5581,7 +5582,7 @@ body {
 }
 .preconsult-card {
   grid-column: 1/-1;
-  border: 1px solid rgba(8, 124, 120, 0.18);
+  border: 1px solid rgba(26, 58, 107, 0.18);
   border-radius: 16px;
   padding: 18px;
   background: linear-gradient(135deg, #f5fbf9, #fff);
@@ -5640,7 +5641,7 @@ body {
 .preconsult-chat textarea:focus,
 .preconsult-chat select:focus {
   border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(8, 124, 120, 0.08);
+  box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.08);
 }
 .preconsult-urgent {
   margin: 0;
@@ -5728,7 +5729,7 @@ body {
 .ai-preconsult-card {
   margin: 0 0 24px;
   padding: 22px;
-  border: 1px solid rgba(8, 124, 120, 0.18);
+  border: 1px solid rgba(26, 58, 107, 0.18);
   border-radius: 18px;
   background: linear-gradient(135deg, #f5fbf9, #fff);
   box-shadow: 0 14px 40px rgba(7, 39, 49, 0.06);
@@ -5747,7 +5748,7 @@ body {
   padding: 7px 10px;
   border-radius: 999px;
   background: #e8f7f0;
-  color: #087c78;
+  color: #1a3a6b;
   font-size: 10px;
   font-weight: 800;
   white-space: nowrap;
@@ -5820,7 +5821,7 @@ body {
 }
 .ai-chat-form textarea:focus {
   border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(8, 124, 120, 0.08);
+  box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.08);
 }
 .ai-report-note {
   margin: 10px 0 0;
@@ -5867,7 +5868,7 @@ body {
   padding: 56px 42px;
   text-align: center;
   background: #f5fbf9;
-  border: 1px solid rgba(8, 124, 120, 0.16);
+  border: 1px solid rgba(26, 58, 107, 0.16);
   border-radius: 22px;
 }
 .booking-in-progress h2 {
@@ -5909,7 +5910,7 @@ body {
 }
 .precheck-toggle select:focus {
   border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(8, 124, 120, 0.08);
+  box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.08);
 }
 .precheck-toggle small {
   font-weight: 400;
@@ -5997,7 +5998,7 @@ body {
   padding: 15px 16px;
   border-radius: 14px;
   background: #f4faf8;
-  border: 1px solid rgba(8, 124, 120, 0.12);
+  border: 1px solid rgba(26, 58, 107, 0.12);
 }
 .profile-details small {
   display: block;
@@ -6041,7 +6042,7 @@ body {
 .profile-form input:focus,
 .profile-form textarea:focus {
   border-color: var(--teal);
-  box-shadow: 0 0 0 3px rgba(8, 124, 120, 0.08);
+  box-shadow: 0 0 0 3px rgba(26, 58, 107, 0.08);
 }
 .profile-wide {
   grid-column: span 2;
@@ -6226,7 +6227,7 @@ body {
   padding: 18px;
   border-radius: 13px;
   background: #f3faf7;
-  border: 1px solid rgba(8, 124, 120, 0.16);
+  border: 1px solid rgba(26, 58, 107, 0.16);
   color: var(--ink);
   font-size: 13px;
   line-height: 1.65;
@@ -6290,7 +6291,7 @@ body {
   width: 7px;
 }
 .preconsult-chat::-webkit-scrollbar-thumb {
-  background: rgba(8, 124, 120, 0.28);
+  background: rgba(26, 58, 107, 0.28);
   border-radius: 20px;
 }
 @media (max-width: 620px) {
@@ -6393,7 +6394,7 @@ body {
 }
 .admin-readable-report .report-speaker.patient {
   background: #eaf7f3;
-  border-color: rgba(8, 124, 120, 0.2);
+  border-color: rgba(26, 58, 107, 0.2);
 }
 .admin-readable-report .report-speaker > span {
   display: block;
@@ -6456,5 +6457,165 @@ body {
   }
   .booking-row .status {
     white-space: nowrap;
+  }
+}
+
+/* NK Hospital brand layer. Keep this last so legacy theme sections cannot override it. */
+.topbar {
+  background: #002247;
+}
+.header {
+  background: rgba(0, 34, 71, 0.98);
+  border-bottom-color: rgba(255, 255, 255, 0.14);
+  box-shadow: 0 14px 38px rgba(0, 24, 52, 0.18);
+}
+.header:before {
+  background: linear-gradient(90deg, transparent, #c9a227, transparent);
+}
+.brand {
+  flex: 0 0 86px;
+  width: 86px;
+  height: 82px;
+  padding: 3px;
+  background: transparent;
+  box-shadow: none;
+}
+.brand-logo {
+  width: 76px;
+  height: 76px;
+  filter: drop-shadow(0 5px 12px rgba(0, 0, 0, 0.24));
+  mix-blend-mode: normal;
+}
+.loader-logo-stage img {
+  filter: brightness(0) saturate(100%) invert(17%) sepia(27%) saturate(2436%)
+    hue-rotate(179deg) brightness(91%) contrast(96%)
+    drop-shadow(0 12px 18px rgba(0, 34, 71, 0.16));
+}
+.nav a,
+.nav a:hover,
+.nav a.active {
+  color: rgba(255, 255, 255, 0.88);
+}
+.nav a:hover,
+.nav a.active {
+  color: #fff;
+}
+.nav a.active:after {
+  background: #c9a227;
+}
+.header .nav > a.active,
+.header .nav-menu > a.active {
+  color: #e7c95f !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+.header .nav > a.active:after,
+.header .nav-menu > a.active:after {
+  background: #c9a227 !important;
+  box-shadow: none !important;
+}
+.nav-dropdown a,
+.nav-dropdown a:hover,
+.nav-dropdown a.active {
+  color: #1a3a6b;
+}
+@media (min-width: 901px) {
+  .header:has(.nav-menu:hover),
+  .header:has(.nav-menu:focus-within) {
+    height: 88px;
+    background: rgba(0, 34, 71, 0.98);
+  }
+  .header .nav-dropdown {
+    background: #002247;
+    border-color: rgba(201, 162, 39, 0.38);
+  }
+  .header .nav-dropdown a,
+  .header .nav-dropdown .nav-dropdown-all {
+    color: #fff !important;
+  }
+  .header .nav-dropdown a:hover,
+  .header .nav-dropdown a:focus-visible,
+  .header .nav-dropdown a.active {
+    color: #002247 !important;
+    background: #c9a227 !important;
+    padding-left: 13px !important;
+  }
+  .header .nav-dropdown a.active:after {
+    display: none;
+  }
+  .header .nav-dropdown .nav-dropdown-all {
+    color: #e7c95f !important;
+  }
+  .header .nav-dropdown .nav-dropdown-all:hover,
+  .header .nav-dropdown .nav-dropdown-all:focus-visible {
+    color: #002247 !important;
+  }
+}
+.icon-link,
+.menu-toggle {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.08);
+}
+.icon-link:hover,
+.menu-toggle:hover {
+  color: #002247;
+  background: #fff;
+}
+.header .button {
+  background: #c9a227;
+  color: #002247;
+}
+.header .button:hover {
+  background: #dfbd4b;
+}
+.footer-identity small {
+  border-left-color: rgba(201, 162, 39, 0.5);
+}
+.admin-sidebar .admin-logo {
+  min-height: 98px !important;
+  height: 98px !important;
+  padding: 7px !important;
+  background: #f7f9fc !important;
+  border: 1px solid rgba(201, 162, 39, 0.38) !important;
+  box-shadow: 0 12px 28px rgba(0, 24, 52, 0.18) !important;
+}
+.admin-sidebar .admin-logo > img {
+  width: 190px !important;
+  height: 84px !important;
+  filter: brightness(0) saturate(100%) invert(17%) sepia(27%) saturate(2436%)
+    hue-rotate(179deg) brightness(91%) contrast(96%) !important;
+}
+.appointment-inline-head .eyebrow {
+  color: #e7c95f;
+}
+.appointment-inline-head h1 {
+  color: #fff;
+}
+.appointment-inline-head p {
+  color: #d8ece9;
+}
+@media (max-width: 1040px) {
+  .mobile-nav {
+    background: #fff;
+    border-top-color: rgba(0, 34, 71, 0.12);
+  }
+  .mobile-nav a,
+  .mobile-nav a:hover,
+  .mobile-nav a.mobile-active {
+    color: #1a3a6b;
+  }
+}
+
+@media print {
+  .admin-detail-print-sheet .print-letterhead-logo,
+  .admin-detail-print-sheet .print-summary-page-head img,
+  .admin-detail-print-sheet .print-watermark img {
+    filter: brightness(0) saturate(100%) invert(17%) sepia(27%) saturate(2436%)
+      hue-rotate(179deg) brightness(91%) contrast(96%) !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+  .admin-detail-print-sheet .print-letterhead-logo {
+    opacity: 1 !important;
   }
 }

@@ -19,6 +19,20 @@ const ContentContext = createContext<ContentState>({
   page:(key)=>defaultPages.find(p=>p.page_key===key) || defaultPages[0]
 });
 
+const realImageReplacements: Record<string, string> = {
+  "/assets/img/team/gicancer.png": "/assets/img/service/sr-d-1.jpg",
+  "/assets/img/team/hernia.png": "/assets/img/service/laprosocopic.png",
+  "/assets/img/team/liver.png": "/assets/img/service/sr-d-1.jpg",
+  "/assets/img/team/gallbladder.png": "/assets/img/service/laprosocopic.png",
+  "/assets/img/lifestyle.png": "/assets/img/service/ser8-5.jpg",
+  "/assets/img/whychoosearif.png": "/gallery/IMG-20260613-WA0050.jpg",
+};
+
+function withRealImage<T extends { image_url: string }>(item: T): T {
+  const replacement = realImageReplacements[item.image_url];
+  return replacement ? { ...item, image_url: replacement } : item;
+}
+
 export function ContentProvider({children}:{children:ReactNode}) {
   const pathname=usePathname();
   const [treatments,setTreatments]=useState(defaultsTreatments);
@@ -39,12 +53,21 @@ export function ContentProvider({children}:{children:ReactNode}) {
         supabase.from("gallery_items").select("*").eq("published",true).order("sort_order"),
         supabase.from("site_settings").select("*").eq("key","general").maybeSingle()
       ]);
-      if(t.data?.length){const bySlug=new Map(t.data.map(row=>[row.slug,row]));setTreatments([...defaultsTreatments.map(item=>bySlug.get(item.slug)||item),...t.data.filter(row=>!defaultsTreatments.some(item=>item.slug===row.slug))].filter(item=>item.published!==false));}
-      if(a.data?.length){const bySlug=new Map(a.data.map(row=>[row.slug,row]));setArticles([...defaultsArticles.map(item=>bySlug.get(item.slug)||item),...a.data.filter(row=>!defaultsArticles.some(item=>item.slug===row.slug))].filter(item=>item.published!==false));}
+      if(t.data?.length){const normalized=t.data.map(withRealImage);const bySlug=new Map(normalized.map(row=>[row.slug,row]));setTreatments([...defaultsTreatments.map(item=>bySlug.get(item.slug)||item),...normalized.filter(row=>!defaultsTreatments.some(item=>item.slug===row.slug))].filter(item=>item.published!==false));}
+      if(a.data?.length){const normalized=a.data.map(withRealImage);const bySlug=new Map(normalized.map(row=>[row.slug,row]));setArticles([...defaultsArticles.map(item=>bySlug.get(item.slug)||item),...normalized.filter(row=>!defaultsArticles.some(item=>item.slug===row.slug))].filter(item=>item.published!==false));}
       if(p.data?.length) setPages([...defaultPages.map(item=>p.data.find(row=>row.page_key===item.page_key) || item),...p.data.filter(row=>!defaultPages.some(item=>item.page_key===row.page_key))]);
       if(n.data?.length) setNavigation(n.data);
-      if(g.data?.length) setGallery([...g.data, ...defaultGallery.filter(item=>!g.data.some(row=>row.image_url===item.image_url))]);
-      if(s.data?.value) setSettings({...defaultSettings,...s.data.value});
+      if(g.data?.length) {const normalized=g.data.map(withRealImage);setGallery([...normalized, ...defaultGallery.filter(item=>!normalized.some(row=>row.image_url===item.image_url))]);}
+      if(s.data?.value) {
+        const savedSettings = {...defaultSettings,...s.data.value};
+        if(savedSettings.location === "Kalaburagi, Karnataka") {
+          savedSettings.location = defaultSettings.location;
+        }
+        if(/9(?::00)?\s*AM.*7(?::00)?\s*PM/i.test(savedSettings.hours)) {
+          savedSettings.hours = defaultSettings.hours;
+        }
+        setSettings(savedSettings);
+      }
     }
     setLoading(false);
   }

@@ -15,8 +15,10 @@ export default function Contact() {
           <iframe
             className="map"
             title="NK Hospital Kalaburagi"
-            src="https://www.google.com/maps?q=NK%20Hospital%20Kalaburagi%20Karnataka&output=embed"
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3808.299447032556!2d76.80705037462612!3d17.349318103901805!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bc8b90063ca1855%3A0x34b789506ab58a57!2sNK%20HOSPITAL!5e0!3m2!1sen!2sin!4v1789981587414!5m2!1sen!2sin"
             loading="lazy"
+            allowFullScreen
+            referrerPolicy="strict-origin-when-cross-origin"
           />
         </div>
       </section>

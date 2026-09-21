@@ -1,5 +1,8 @@
 export function practiceLogo(url: string) {
-  return url === "/assets/img/gastroarif.png"
-    ? "/assets/img/gastroarif-mark.png"
+  return [
+    "/assets/img/gastroarif.png",
+    "/assets/img/gastroarif-mark.png",
+  ].includes(url)
+    ? "/assets/img/nk-hospital-logo.png"
     : url;
 }

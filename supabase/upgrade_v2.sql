@@ -125,7 +125,7 @@ select * from (values
 where not exists(select 1 from public.gallery_items);
 
 insert into public.site_settings(key,value) values
-('general','{"logo_url":"/assets/img/gastroarif.png","doctor_name":"Dr. Arif Raza","credentials":"Consultant GI, HPB, GI Oncology & Advanced Laparoscopic Surgeon","phone":"+91 91879 66771","email":"dr.raza@nkhospital.in","hospital":"NK Hospital","location":"Kalaburagi, Karnataka","hours":"Monday – Saturday · 9:00 AM – 7:00 PM"}')
+('general','{"logo_url":"/assets/img/nk-hospital-logo.png","doctor_name":"Dr. Arif Raza","credentials":"Consultant GI, HPB, GI Oncology & Advanced Laparoscopic Surgeon","phone":"+91 91879 66771","email":"dr.raza@nkhospital.in","hospital":"NK Hospital","location":"NK Nagar, opposite Shor Gumbad, Jaferabad, Kalaburagi, Karnataka 585103","hours":"Mon – Sat: 8:00 AM – 8:00 PM · Emergency: 24/7"}')
 on conflict(key) do nothing;
 
 -- Promote the exact authentication account. This deliberately fails instead

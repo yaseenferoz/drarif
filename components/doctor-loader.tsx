@@ -9,7 +9,7 @@ export function DoctorLoader() {
           <span className="loader-kicker">DR. ARIF RAZA</span>
           <span>Gastrointestinal · HPB · Laparoscopic surgery</span>
         </div>
-        <div className="loader-logo-stage" aria-hidden="true"><span/><Image src="/assets/img/gastroarif-mark.png" width={230} height={160} alt="" priority/></div>
+        <div className="loader-logo-stage" aria-hidden="true"><span/><Image src="/assets/img/nk-hospital-logo.png" width={230} height={160} alt="" priority/></div>
         <div className="loader-copy"><strong>Preparing your care experience</strong><small>Secure appointments, specialist information and clinic updates</small></div>
         <div className="loader-progress"><span /></div>
       </section>

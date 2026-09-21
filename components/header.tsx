@@ -44,7 +44,7 @@ export function Header() {
         <div className="shell topbar-inner">
           <span>Advanced digestive surgery · Kalaburagi</span>
           <div>
-            <span className="topbar-hours">Mon–Sat · 9 AM–7 PM</span>
+            <span className="topbar-hours">Mon–Sat · 8 AM–8 PM · Emergency 24/7</span>
             <a href={`tel:${site.phoneHref}`}>
               <Phone size={14} /> {site.phone}
             </a>
@@ -87,7 +87,11 @@ export function Header() {
                   </Link>
                   <div className="nav-dropdown">
                     {children.map((child) => (
-                      <Link href={child.href} key={child.href}>
+                      <Link
+                        className={path.startsWith(child.href) ? "active" : ""}
+                        href={child.href}
+                        key={child.href}
+                      >
                         {child.label}
                       </Link>
                     ))}

@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     locale: "en_IN",
     images: [
       {
-        url: "/assets/img/gastroarif.png",
+        url: "/assets/img/nk-hospital-logo.png",
         width: 1200,
         height: 630,
         alt: "Dr. Arif Raza",
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
     title: "Dr. Arif Raza | Gastrointestinal Surgeon in Kalaburagi",
     description:
       "Specialist GI, HPB, GI oncology and advanced laparoscopic surgical care.",
-    images: ["/assets/img/gastroarif.png"],
+    images: ["/assets/img/nk-hospital-logo.png"],
   },
   robots: {
     index: true,
@@ -56,9 +56,9 @@ export const metadata: Metadata = {
     googleBot: { index: true, follow: true },
   },
   icons: {
-    icon: "/assets/img/gastroarif-mark.png",
-    shortcut: "/assets/img/gastroarif-mark.png",
-    apple: "/assets/img/gastroarif-mark.png",
+    icon: "/assets/img/nk-hospital-logo.png",
+    shortcut: "/assets/img/nk-hospital-logo.png",
+    apple: "/assets/img/nk-hospital-logo.png",
   },
 };
 
@@ -72,7 +72,7 @@ export default function RootLayout({
     "@type": "Physician",
     name: "Dr. Arif Raza",
     url: siteUrl,
-    image: `${siteUrl}/assets/img/gastroarif.png`,
+    image: `${siteUrl}/assets/img/nk-hospital-logo.png`,
     description:
       "Gastrointestinal, GI oncology, HPB and advanced laparoscopic surgeon in Kalaburagi.",
     medicalSpecialty: ["Gastroenterology", "Surgery", "Oncology"],
@@ -80,8 +80,10 @@ export default function RootLayout({
     email: "dr.raza@nkhospital.in",
     address: {
       "@type": "PostalAddress",
+      streetAddress: "NK Nagar, opposite Shor Gumbad, Jaferabad",
       addressLocality: "Kalaburagi",
       addressRegion: "Karnataka",
+      postalCode: "585103",
       addressCountry: "IN",
     },
     sameAs: [

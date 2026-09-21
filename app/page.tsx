@@ -19,7 +19,7 @@ export default function Home() {
         <div className="hero-visual">
           <div className="hero-image"><Image src="/assets/img/aboutarif.png" alt="Dr. Arif Raza" fill priority sizes="(max-width: 800px) 100vw, 45vw"/></div>
           <div className="float-card float-top"><span><ShieldCheck/></span><div><b>Specialist-led care</b><small>From diagnosis to recovery</small></div></div>
-          <div className="float-card float-bottom"><span><Clock3/></span><div><b>Mon – Sat</b><small>9:00 AM – 7:00 PM</small></div></div>
+          <div className="float-card float-bottom"><span><Clock3/></span><div><b>Mon – Sat</b><small>8:00 AM – 8:00 PM · Emergency 24/7</small></div></div>
         </div>
       </div>
       <div className="shell location-strip"><div><MapPin/><span><small>Consulting at</small><b>NK Hospital, Kalaburagi</b></span></div><div><Phone/><span><small>Appointment desk</small><b>{site.phone}</b></span></div><Link href="/contact">Get directions <ArrowRight/></Link></div>
@@ -32,7 +32,7 @@ export default function Home() {
     </section>
     <section className="section story-section">
       <div className="shell story-grid">
-        <div className="story-images"><div className="story-main"><Image src="/assets/img/whychoosearif.png" alt="Dr. Arif Raza consulting" fill sizes="50vw"/></div><div className="experience-badge"><b>13+</b><span>years in<br/>specialist surgery</span></div></div>
+        <div className="story-images"><div className="story-main"><Image src="/gallery/IMG-20260613-WA0050.jpg" alt="Dr. Arif Raza at NK Hospital" fill sizes="50vw"/></div><div className="experience-badge"><b>13+</b><span>years in<br/>specialist surgery</span></div></div>
         <div className="story-copy"><span className="eyebrow">MEET YOUR SURGEON</span><h2><HomeSectionCopy field="about_title" fallback="Expert decisions. Honest conversations."/></h2><p><HomeSectionCopy field="about_text" fallback="Dr. Arif Raza trained in Surgical Gastroenterology at the Asian Institute of Gastroenterology, Hyderabad, and returned to Kalaburagi to make advanced digestive surgery accessible closer to home."/></p>
           <ul className="check-list"><li><Check/>Clear explanation of diagnosis and options</li><li><Check/>Surgery recommended only when appropriate</li><li><Check/>Structured support through recovery</li></ul>
           <Link className="button button-dark" href="/about">Meet Dr. Arif <ArrowRight/></Link>
