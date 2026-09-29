@@ -14,6 +14,17 @@ A modern, responsive Next.js website with Supabase authentication, dynamic treat
 
 Without environment variables, the public site runs with built-in content and appointment requests are kept in browser storage for preview.
 
+## Email confirmation redirects
+
+In Supabase Dashboard, open **Authentication > URL Configuration**:
+
+1. Set **Site URL** to the live website origin (for example, `https://drarif.vercel.app`, if that is the deployed domain), not localhost.
+2. Add the live website's `/login` URL to **Redirect URLs** (for example, `https://drarif.vercel.app/login`). Add `http://localhost:3000/login` separately for local development.
+
+Signup explicitly requests the current website's `/login` URL as its email confirmation destination. Supabase must allow that URL or it can fall back to the Site URL. After confirmation, patients can sign in with their email and password.
+
+After correcting these settings, request a fresh confirmation email; an invalid, expired, or already-used link cannot be reused.
+
 ## Content model
 
 - `treatments`: public treatment detail pages and listing cards
