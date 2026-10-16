@@ -1,14 +1,14 @@
-type ChatMessage = { role: "system" | "user"; content: string };
+type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
 
 const providers = [
-  { name: "cerebras", key: process.env.CEREBRAS_API_KEY, url: "https://api.cerebras.ai/v1/chat/completions", model: process.env.CEREBRAS_MODEL || "llama-3.3-70b" },
-  { name: "groq", key: process.env.GROQ_API_KEY, url: "https://api.groq.com/openai/v1/chat/completions", model: process.env.GROQ_MODEL || "llama-3.1-8b-instant" },
   { name: "openrouter", key: process.env.OPENROUTER_API_KEY, url: "https://openrouter.ai/api/v1/chat/completions", model: process.env.OPENROUTER_MODEL || "openrouter/free" },
+  { name: "cerebras", key: process.env.CEREBRAS_API_KEY, url: "https://api.cerebras.ai/v1/chat/completions", model: process.env.CEREBRAS_MODEL || "llama-3.3-70b" },
+  { name: "groq", key: process.env.GROQ_API_KEY, url: "https://api.groq.com/openai/v1/chat/completions", model: process.env.GROQ_MODEL || "llama-3.3-70b-versatile" },
 ];
 
-async function requestBedrock(messages: ChatMessage[], json: boolean) {
+export async function askBedrock(messages: ChatMessage[], json = false) {
   const token = process.env.AWS_BEARER_TOKEN_BEDROCK;
-  if (!token) return null;
+  if (!token) throw new Error("AWS_BEARER_TOKEN_BEDROCK is not configured.");
   const region = process.env.AWS_REGION || "us-east-1";
   const model = process.env.BEDROCK_MODEL_ID || "us.amazon.nova-2-lite-v1:0";
   const system = messages.filter(message => message.role === "system").map(message => ({ text: message.content }));
@@ -16,11 +16,16 @@ async function requestBedrock(messages: ChatMessage[], json: boolean) {
   const controller = new AbortController(); const timeout = setTimeout(() => controller.abort(), 12000);
   try {
     const response = await fetch(`https://bedrock-runtime.${region}.amazonaws.com/model/${encodeURIComponent(model)}/converse`, { method: "POST", signal: controller.signal, headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` }, body: JSON.stringify({ ...(system.length ? { system } : {}), messages: conversation, inferenceConfig: { temperature: 0, maxTokens: 700, ...(json ? { stopSequences: [] } : {}) } }) });
-    if (!response.ok) return null;
+    if (!response.ok) {
+      const data = await response.json().catch(() => ({}));
+      const detail = typeof data?.message === "string" ? data.message : `HTTP ${response.status}`;
+      throw new Error(`AWS Bedrock request failed: ${detail}`);
+    }
     const data = await response.json();
     const text = data?.output?.message?.content?.map((part: any) => part.text || "").join("");
-    return typeof text === "string" && text.trim() ? { text: text.trim(), provider: "amazon-nova-2-lite" } : null;
-  } catch { return null; } finally { clearTimeout(timeout); }
+    if (typeof text !== "string" || !text.trim()) throw new Error("AWS Bedrock returned an empty response.");
+    return { text: text.trim(), provider: "amazon-bedrock" };
+  } finally { clearTimeout(timeout); }
 }
 
 async function requestOpenAI(provider: typeof providers[number], messages: ChatMessage[], json: boolean) {
@@ -47,7 +52,7 @@ async function requestGemini(messages: ChatMessage[], json: boolean) {
 }
 
 export async function askProviders(messages: ChatMessage[], json = false) {
-  const bedrock = await requestBedrock(messages, json); if (bedrock) return bedrock;
+  const bedrock = await askBedrock(messages, json); if (bedrock) return bedrock;
   for (const provider of providers) { const result = await requestOpenAI(provider, messages, json); if (result) return result; }
   return requestGemini(messages, json);
 }
