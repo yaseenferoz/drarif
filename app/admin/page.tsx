@@ -657,18 +657,15 @@ function Appointments({
         </button>
         <div className="admin-detail-print-sheet">
           <div className="print-watermark" aria-hidden="true">
-            <Image
+            <img
               src={practiceLogo(settings.logo_url)}
-              width={420}
-              height={420}
               alt=""
+              className="print-watermark-logo"
             />
           </div>
           <div className="print-letterhead">
-            <Image
+            <img
               src={practiceLogo(settings.logo_url)}
-              width={190}
-              height={78}
               alt={settings.doctor_name}
               className="print-letterhead-logo"
             />
@@ -792,10 +789,8 @@ function Appointments({
             {detailItem.pre_diagnosis_report && (
               <section className="print-detailed-summary">
                 <div className="print-summary-page-head">
-                  <Image
+                  <img
                     src={practiceLogo(settings.logo_url)}
-                    width={130}
-                    height={48}
                     alt={settings.doctor_name}
                   />
                   <div>

@@ -2417,6 +2417,12 @@ img {
 .print-watermark {
   display: none;
 }
+.print-watermark-logo {
+  display: block;
+  width: 330px;
+  height: 330px;
+  object-fit: contain;
+}
 .print-prescription-line,
 .print-detailed-summary {
   display: none;
@@ -2458,7 +2464,7 @@ img {
     opacity: 0.045 !important;
     pointer-events: none !important;
   }
-  .admin-detail-print-sheet .print-watermark img {
+  .admin-detail-print-sheet .print-watermark-logo {
     width: 330px !important;
     height: 330px !important;
     object-fit: contain !important;
@@ -2474,6 +2480,7 @@ img {
     border-bottom: 2px solid #0a827d;
   }
   .print-letterhead-logo {
+    display: block !important;
     width: 170px !important;
     height: 70px !important;
     object-fit: contain;
@@ -2566,6 +2573,11 @@ img {
     page-break-before: always;
     padding-top: 10px;
     color: #102f3a !important;
+  }
+  .admin-detail-print-sheet .print-letterhead,
+  .admin-detail-print-sheet .print-summary-page-head {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
   .print-summary-page-head {
     display: flex;
@@ -6617,5 +6629,10 @@ body {
   }
   .admin-detail-print-sheet .print-letterhead-logo {
     opacity: 1 !important;
+  }
+  .admin-detail-print-sheet img.print-letterhead-logo,
+  .admin-detail-print-sheet .print-summary-page-head img {
+    visibility: visible !important;
+    max-width: none !important;
   }
 }
